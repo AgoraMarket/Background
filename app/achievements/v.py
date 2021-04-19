@@ -1,8 +1,6 @@
 from app import db
-from app.achievements.models import UserAchievements, UserAchievements_recent
+from app.classes.achievements import UserAchievements, UserAchievements_recent
 from datetime import datetime
-##vendor awards
-
 
 #v1
 #id=12

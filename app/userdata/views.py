@@ -16,7 +16,7 @@ from app.classes.affiliate import \
 # End Models
 from app.achievements.c import howmanyitemsbought_customer, howmanytrades_customer
 from app.achievements.v import howmanyitemssold_vendor, howmanytrades_vendor
-from app.common.functions import mkdir_p, convertbtctolocal, btc_cash_converttolocal, userimagelocation
+from app.common.functions import mkdir_p, btc_cash_converttolocal, userimagelocation
 from datetime import datetime
 from decimal import Decimal
 
@@ -232,9 +232,6 @@ def vendorflag(userid):
     db.session.commit()
 
 
-
-
-
 # USER SPENT
 def totalspentonitems(userid, amount, howmany):
     # USER
@@ -249,7 +246,7 @@ def totalspentonitems(userid, amount, howmany):
     itemsbought.totalbtcspent = x
 
     # lifetime -  calculate usd
-    amountinusd = convertbtctolocal(amount=amount, currency=1)
+    amountinusd = btc_cash_converttolocal(amount=amount, currency=1)
     addmount = itemsbought.totalusdspent + amountinusd
     itemsbought.totalusdspent = addmount
 
@@ -288,7 +285,7 @@ def vendortotalmade(userid, amount):
     vendorstats.totalbtcrecieved = x
 
     # lifetime - calculate usd made
-    amountinusd = convertbtctolocal(amount=amount, currency=1)
+    amountinusd = btc_cash_converttolocal(amount=amount, currency=1)
     addmount = vendorstats.totalusdmade + amountinusd
     vendorstats.totalusdmade = addmount
 

@@ -1,6 +1,7 @@
 from app import db
 from datetime import datetime
-from app.wallet_btccash.models import TransactionsBtccash
+from app.classes.wallet_bch import\
+    TransactionsBch
 
 
 def btc_cash_addtransaction(category, amount, userid, comment, shard, orderid, balance):
@@ -21,7 +22,7 @@ def btc_cash_addtransaction(category, amount, userid, comment, shard, orderid, b
         comment = str(comment)
         orderid = int(orderid)
 
-        trans = TransactionsBtccash(
+        trans = TransactionsBch(
             category=category,
             userid=userid,
             confirmations=0,

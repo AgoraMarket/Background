@@ -30,12 +30,12 @@ from app.classes.message import Notifications
 def notification(type, username, userid, salenumber, bitcoin):
 
     addnotice = Notifications(
-                            type = type,
-                            username = username,
-                            userid = userid,
+                            type=type,
+                            username=username,
+                            userid=userid,
                             salenumber=salenumber,
                             bitcoin=bitcoin,
-                            read = 1,
+                            read=1,
                              )
     db.session.add(addnotice)
     db.session.commit()

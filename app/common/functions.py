@@ -1,6 +1,6 @@
 import os
 from app import db
-from app.classes.models import btc_cash_Prices, btcPrices, Query_margin
+from app.classes.models import btc_cash_Prices, Query_margin
 import random
 import string
 from decimal import Decimal
@@ -176,27 +176,9 @@ def id_generator_picture5(size=30, chars=string.ascii_uppercase + string.digits)
     return ''.join(random.choice(chars) for _ in range(size))
 
 
-def priceaftermargin(margin, currency):
-    getcurrentprice = db.session.query(btcPrices) \
-        .filter_by(currency_id=currency).first()
-    marginq = db.session.query(Query_margin).filter_by(id=margin).first()
-    margin1 = marginq.value
-    bt = getcurrentprice.price
-    z = margin1
-    if 0 > margin1:
-        newprice = (z * -bt)
-        x = (newprice - bt)
-        y = (Decimal(bt) - Decimal(x))
-        c = floating_decimals(y, 2)
-        return c
-    else:
-        y = Decimal(z * bt)
-        c = '{0:.2f}'.format(y)
-        return c
-
 
 def usdtocurrency(price, currency):
-    getcurrentprice = db.session.query(btcPrices)\
+    getcurrentprice = db.session.query()\
         .filter_by(currency_id=currency).first()
     if currency == 1:
         return price
@@ -207,13 +189,6 @@ def usdtocurrency(price, currency):
         return c
 
 
-def convertbtctolocal(amount, currency):
-    getcurrentprice = db.session.query(btcPrices) \
-        .filter_by(currency_id=currency).first()
-    bt = getcurrentprice.price
-    z = Decimal(bt) * Decimal(amount)
-    c = floating_decimals(z, 2)
-    return c
 
 def priceaftermargin_btccash(margin, currency):
     getcurrentprice = db.session.query(btc_cash_Prices) \

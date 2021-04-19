@@ -2,8 +2,7 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask import current_app
-from flask_login import UserMixin, AnonymousUserMixin
-from app import db, login_manager
+from app import db
 from datetime import datetime
 
 
@@ -38,12 +37,8 @@ class AccountSeedWords(db.Model):
     wordstring = db.column(db.text)
 
 
-class AnonymousUser(AnonymousUserMixin):
-    def __init__(self):
-        self.username = 'Guest'
 
-
-class User(UserMixin, db.Model):
+class User( db.Model):
     __tablename__ = 'users'
     __bind_key__ = 'Agora_Market_Users'
     __table_args__ = {'useexisting': True}
@@ -51,7 +46,7 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, autoincrement=True, primary_key=True, unique=True)
     username = db.Column(db.Text)
     password_hash = db.Column(db.Text)
-    member_since = db.Column(db.TIMESTAMP() default=datetime.utcnow())
+    member_since = db.Column(db.TIMESTAMP(), default=datetime.utcnow())
     email = db.Column(db.Text)
     wallet_pin = db.Column(db.Text)
     profileimage = db.Column(db.Text)
@@ -61,7 +56,7 @@ class User(UserMixin, db.Model):
     currency = db.Column(db.INTEGER)
     vendor_account = db.Column(db.INTEGER)
     selling_from = db.Column(db.Text)
-    last_seen = db.Column(db.TIMESTAMP() default=datetime.utcnow())
+    last_seen = db.Column(db.TIMESTAMP(), default=datetime.utcnow())
     admin = db.Column(db.INTEGER)
     admin_role = db.Column(db.INTEGER)
     dispute = db.Column(db.INTEGER)
@@ -126,8 +121,3 @@ class User(UserMixin, db.Model):
         except:
             return None
         return User.query.get(data['id'])
-
-
-login_manager.anonymous_user = AnonymousUser
-db.create_all()
-db.session.commit()

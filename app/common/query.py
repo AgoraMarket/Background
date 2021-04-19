@@ -5,11 +5,9 @@ def itemororder():
         (0, ''),
         (1, 'Per Item'),
         (2, 'Per Order'),
-
-
-
     ]
     return list
+
 
 def continents():
     list = [
@@ -24,10 +22,6 @@ def continents():
         (8, 'Bahamas/islands area'),
         (9, 'Military addresses'),
         (10, 'PO Boxes'),
-
-
-
-
     ]
     return list
 
@@ -52,7 +46,6 @@ def giftmespeed():
         (1, 'Top'),
         (2, 'High'),
         (3, 'Low'),
-
     ]
     return list
 

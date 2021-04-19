@@ -1,10 +1,10 @@
 from app import db
-from app.achievements.models import UserAchievements, UserAchievements_recent
-from app.auth.models import User
+from app.classes.achievements import UserAchievements, UserAchievements_recent
+from app.classes.auth import User
 from datetime import datetime
 
 
-##e-X level awards
+# e-X level awards
 def levelawards(userid):
     now = datetime.utcnow()
     user = db.session.query(User).filter_by(id=userid).first()
@@ -12,7 +12,7 @@ def levelawards(userid):
     if usera.level == 2:
         if usera.e1 != 1:
             # id = 4
-            #give user some admin roles
+            # give user some admin roles
             usera.e1 = 1
             usera.e1_date = now
 
@@ -26,8 +26,7 @@ def levelawards(userid):
             db.session.add(addit)
             db.session.add(usera)
             db.session.commit()
-        else:
-            pass
+
     elif usera.level == 5:
         if usera.e2 != 1:
             # id = 2
@@ -45,8 +44,7 @@ def levelawards(userid):
             db.session.add(addit)
             db.session.add(usera)
             db.session.commit()
-        else:
-            pass
+
     elif usera.level == 10:
         if usera.e3 != 1:
             # id = 3
@@ -63,8 +61,6 @@ def levelawards(userid):
             db.session.add(usera)
             db.session.commit()
 
-        else:
-            pass
     elif usera.level == 25:
         if usera.e4 != 1:
             # id = 5
@@ -80,8 +76,6 @@ def levelawards(userid):
             db.session.add(addit)
             db.session.add(usera)
             db.session.commit()
-        else:
-            pass
 
     elif usera.level == 50:
         if usera.e5 != 1:
@@ -98,8 +92,6 @@ def levelawards(userid):
             db.session.add(addit)
             db.session.add(usera)
             db.session.commit()
-        else:
-            pass
 
     elif usera.level == 100:
         if usera.e6 != 1:
@@ -116,9 +108,7 @@ def levelawards(userid):
             db.session.add(addit)
             db.session.add(usera)
             db.session.commit()
-        else:
-            pass
+
     else:
         pass
-
 
