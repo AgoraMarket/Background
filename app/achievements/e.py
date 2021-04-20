@@ -4,8 +4,9 @@ from app.classes.auth import User
 from datetime import datetime
 
 
-# e-X level awards
+
 def levelawards(userid):
+    # e-X level awards
     now = datetime.utcnow()
     user = db.session.query(User).filter_by(id=userid).first()
     usera = db.session.query(UserAchievements).filter_by(userid=userid).first()

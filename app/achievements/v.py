@@ -2,10 +2,11 @@ from app import db
 from app.classes.achievements import UserAchievements, UserAchievements_recent
 from datetime import datetime
 
-#v1
-#id=12
+
 def firstsale(userid):
-    now= datetime.utcnow()
+    # v1
+    # id=12
+    now = datetime.utcnow()
     usera = db.session.query(UserAchievements).filter_by(userid=userid).first()
     if usera.v1 != 1:
         usera.v1 = 1
@@ -20,13 +21,11 @@ def firstsale(userid):
         db.session.add(addit)
         db.session.add(usera)
         db.session.commit()
-    else:
-        pass
 
 
-#v2
-#id 13
 def firsttrade(userid):
+    # v2
+    # id 13
     now = datetime.utcnow()
     usera = db.session.query(UserAchievements).filter_by(userid=userid).first()
     if usera.v2 != 1:
@@ -42,11 +41,11 @@ def firsttrade(userid):
         db.session.add(addit)
         db.session.add(usera)
         db.session.commit()
-    else:
-        pass
-#v3
-#id 17
+
+
 def obtainedtrustlevel(userid):
+    # v3
+    # id 17
     now = datetime.utcnow()
     usera = db.session.query(UserAchievements).filter_by(userid=userid).first()
     if usera.v3 != 1:
@@ -66,9 +65,9 @@ def obtainedtrustlevel(userid):
         pass
 
 
-#v4
-#id 11
 def becamevendor(userid):
+    # v4
+    # id 11
     now = datetime.utcnow()
     usera = db.session.query(UserAchievements).filter_by(userid=userid).first()
     if usera.v4 != 1:
@@ -84,14 +83,11 @@ def becamevendor(userid):
         db.session.add(addit)
         db.session.add(usera)
         db.session.commit()
-    else:
-        pass
 
 
-
-##customer awards
-#id=32-35
 def howmanytrades_vendor(userid, number):
+    # customer awards
+    # id=32-35
     usera = db.session.query(UserAchievements).filter_by(userid=userid).first()
     now = datetime.utcnow()
     if number >= 10:
@@ -108,10 +104,7 @@ def howmanytrades_vendor(userid, number):
             db.session.add(addit)
             db.session.add(usera)
             db.session.commit()
-        else:
-            pass
-    else:
-        pass
+
     if number >= 100:
         if usera.v12 != 1:
             usera.v12 = 1
@@ -126,10 +119,7 @@ def howmanytrades_vendor(userid, number):
             db.session.add(addit)
             db.session.add(usera)
             db.session.commit()
-        else:
-            pass
-    else:
-        pass
+
     if number >= 1000:
         if usera.v13 != 1:
             usera.v13 = 1
@@ -144,10 +134,7 @@ def howmanytrades_vendor(userid, number):
             db.session.add(addit)
             db.session.add(usera)
             db.session.commit()
-        else:
-            pass
-    else:
-        pass
+
     if number >= 2500:
         if usera.v14 != 1:
             usera.v14 = 1
@@ -162,10 +149,7 @@ def howmanytrades_vendor(userid, number):
             db.session.add(addit)
             db.session.add(usera)
             db.session.commit()
-        else:
-            pass
-    else:
-        pass
+
     if number >= 5000:
         if usera.v15 != 1:
             usera.v15 = 1
@@ -180,10 +164,7 @@ def howmanytrades_vendor(userid, number):
             db.session.add(addit)
             db.session.add(usera)
             db.session.commit()
-        else:
-            pass
-    else:
-        pass
+
     if number >= 10300:
         if usera.v16 != 1:
             usera.v16 = 1
@@ -198,14 +179,11 @@ def howmanytrades_vendor(userid, number):
             db.session.add(addit)
             db.session.add(usera)
             db.session.commit()
-        else:
-            pass
-    else:
-        pass
 
-##customer awards
-#id=32-35
+
 def howmanyitemssold_vendor(userid, number):
+    # customer awards
+    # id=32-35
     usera = db.session.query(UserAchievements).filter_by(userid=userid).first()
     now = datetime.utcnow()
     if number >= 10:
@@ -222,10 +200,7 @@ def howmanyitemssold_vendor(userid, number):
             db.session.add(addit)
             db.session.add(usera)
             db.session.commit()
-        else:
-            pass
-    else:
-        pass
+
     if number >= 100:
         if usera.v6 != 1:
             usera.v6 = 1
@@ -240,10 +215,7 @@ def howmanyitemssold_vendor(userid, number):
             db.session.add(addit)
             db.session.add(usera)
             db.session.commit()
-        else:
-            pass
-    else:
-        pass
+
     if number >= 1000:
         if usera.v7 != 1:
             usera.v7 = 1
@@ -258,10 +230,7 @@ def howmanyitemssold_vendor(userid, number):
             db.session.add(addit)
             db.session.add(usera)
             db.session.commit()
-        else:
-            pass
-    else:
-        pass
+
     if number >= 2500:
         if usera.v8 != 1:
             usera.v8 = 1
@@ -276,10 +245,7 @@ def howmanyitemssold_vendor(userid, number):
             db.session.add(addit)
             db.session.add(usera)
             db.session.commit()
-        else:
-            pass
-    else:
-        pass
+
     if number >= 5000:
         if usera.v9 != 1:
             usera.v9 = 1
@@ -294,10 +260,7 @@ def howmanyitemssold_vendor(userid, number):
             db.session.add(addit)
             db.session.add(usera)
             db.session.commit()
-        else:
-            pass
-    else:
-        pass
+
     if number >= 10000:
         if usera.v10 != 1:
             usera.v10 = 1
@@ -312,7 +275,3 @@ def howmanyitemssold_vendor(userid, number):
             db.session.add(addit)
             db.session.add(usera)
             db.session.commit()
-        else:
-            pass
-    else:
-        pass
