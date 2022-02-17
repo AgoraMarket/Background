@@ -1,7 +1,7 @@
 from app import db
 
-from app.classes.message import Post, Comment
-from app.classes.service import shippingSecret, ReturnsTracking, websitefeedback
+from app.classes.message import Message_Post, Message_Comment
+from app.classes.service import Service_ShippingSecret, Service_ReturnsTracking, Service_WebsiteFeedback
 
 from datetime import datetime, timedelta
 
@@ -15,7 +15,7 @@ def deletereturnsshipping():
     :return:
     """
 
-    getmsgs = db.session.query(ReturnsTracking).filter(ReturnsTracking.timestamp < olderthanfourmonths).all()
+    getmsgs = db.session.query(Service_ReturnsTracking).filter(Service_ReturnsTracking.timestamp < olderthanfourmonths).all()
     for f in getmsgs:
         db.session.delete(f)
     db.session.commit()
@@ -26,7 +26,7 @@ def deletesecretshipping():
     #this will delete all secret shipping addresses after 4 weeks
     :return:
     """
-    getmsgs = db.session.query(shippingSecret).filter(shippingSecret.timestamp < olderthanfourmonths).all()
+    getmsgs = db.session.query(Service_ShippingSecret).filter(Service_ShippingSecret.timestamp < olderthanfourmonths).all()
     for f in getmsgs:
         db.session.delete(f)
     db.session.commit()
@@ -38,7 +38,7 @@ def deleteoldmsgs():
     :return:
     """
 
-    getmsgs = db.session.query(Post).filter(Post.timestamp < olderthanfourmonths).all()
+    getmsgs = db.session.query(Message_Post).filter(Message_Post.timestamp < olderthanfourmonths).all()
     for f in getmsgs:
         db.session.delete(f)
     db.session.commit()
@@ -49,7 +49,7 @@ def deleteoldmcomments():
     #this deletes all comments older than 10 weeks
     :return:
     """
-    getmsgs = db.session.query(Comment).filter(Comment.timestamp < olderthanfourmonths).all()
+    getmsgs = db.session.query(Message_Comment).filter(Message_Comment.timestamp < olderthanfourmonths).all()
     for f in getmsgs:
         db.session.delete(f)
     db.session.commit()
@@ -61,7 +61,7 @@ def deleteoldfeedback():
     :return:
     """
 
-    getmsgs = db.session.query(websitefeedback).filter(websitefeedback.timestamp < olderthanfourmonths).all()
+    getmsgs = db.session.query(Service_WebsiteFeedback).filter(Service_WebsiteFeedback.timestamp < olderthanfourmonths).all()
     for f in getmsgs:
         db.session.delete(f)
     db.session.commit()

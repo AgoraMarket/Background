@@ -1,18 +1,19 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from config import SQLALCHEMY_DATABASE_URI,\
-    SQLALCHEMY_BINDS,\
-    SHARDBTCCASH
-from flask_mail import Mail
 
+
+from flask_mail import Mail
+from config import ConfigMain
 
 app = Flask(__name__)
-app.config.from_object('config')
-app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
-app.config['SQLALCHEMY_BINDS'] = SQLALCHEMY_BINDS
-app.config['SHARDBTCCASH'] = SHARDBTCCASH
+app.config.from_object('ConfigMain')
+app.config['SQLALCHEMY_DATABASE_URI'] = ConfigMain.SQLALCHEMY_DATABASE_URI_0
+UPLOADED_FILES_DEST_ITEM = ConfigMain.UPLOADED_FILES_DEST_ITEM
+UPLOADED_FILES_DEST_USER = ConfigMain.UPLOADED_FILES_DEST_USER
 
 
 db = SQLAlchemy(app)
 mail = Mail(app)
-UPLOADED_FILES_DEST = '/nfs'
+
+
+

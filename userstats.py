@@ -1,6 +1,6 @@
 from app import db
-from app.classes.auth import User
-from app.classes.profile import Userreviews, StatisticsUser
+from app.classes.auth import Auth_User
+from app.classes.profile import Profile_Userreviews, Profile_StatisticsUser
 from decimal import Decimal
 from sqlalchemy import func
 
@@ -8,13 +8,13 @@ from sqlalchemy import func
 
 
 def userrating():
-    user = db.session.query(User).all()
+    user = db.session.query(Auth_User).all()
     for f in user:
-        userstats = db.session.query(StatisticsUser).filter(f.id == StatisticsUser.usernameid).first()
+        userstats = db.session.query(Profile_StatisticsUser).filter(f.id == Profile_StatisticsUser.user_id).first()
         if userstats:
             # gets avg
-            getratings = db.session.query(func.avg(Userreviews.rating))
-            getratings = getratings.filter(Userreviews.customer_id == f.id)
+            getratings = db.session.query(func.avg(Profile_Userreviews.rating))
+            getratings = getratings.filter(Profile_Userreviews.customer_id == f.id)
             avgrate = getratings.all()
             # take avg to a decimal
             try:

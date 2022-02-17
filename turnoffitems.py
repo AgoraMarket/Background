@@ -1,6 +1,6 @@
 from app import db
-from app.classes.item import marketItem
-from app.classes.auth import User
+from app.classes.item import Item_MarketItem
+from app.classes.auth import Auth_User
 from datetime import datetime, timedelta
 
 
@@ -11,26 +11,25 @@ def main():
     :return:
     """
     threedays = datetime.utcnow() - (timedelta(days=3))
-    users = db.session.query(User).filter(User.last_seen <= threedays, User.id != 1).all()
+    users = db.session.query(Auth_User).filter(Auth_User.last_seen <= threedays, Auth_User.id != 1).all()
     for user in users:
-
         # put user on vacation
         user.vacation = 1
-        markitem = db.session.query(marketItem).filter_by(vendor_id=user.id).all()
+        # put there items on vacation
+        markitem = db.session.query(Item_MarketItem).filter_by(vendor_id=user.id).all()
         for item in markitem:
             item.online = 0
             db.session.add(item)
             db.session.add(user)
-
     db.session.commit()
 
 
 def putonline():
-    markitem = db.session.query(marketItem).filter_by(vendor_id=1).all()
+    # put everything online
+    markitem = db.session.query(Item_MarketItem).filter_by(vendor_id=1).all()
     for item in markitem:
         item.online = 1
         db.session.add(item)
-
     db.session.commit()
 
 main()

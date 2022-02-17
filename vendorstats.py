@@ -1,7 +1,7 @@
 from app import db
-from app.classes.auth import User
-from app.classes.userdata import Feedback
-from app.classes.profile import StatisticsVendor
+from app.classes.auth import Auth_User
+from app.classes.userdata import UserData_Feedback
+from app.classes.profile import Profile_StatisticsVendor
 from decimal import Decimal
 from sqlalchemy import func
 
@@ -14,13 +14,13 @@ def vendorrating():
     :return:
     """
 
-    user = db.session.query(User).filter(User.vendor_account == 1).all()
+    user = db.session.query(Auth_User).filter(Auth_User.vendor_account == 1).all()
     for f in user:
-        vendorstats = db.session.query(StatisticsVendor).filter(f.id == StatisticsVendor.vendorid).first()
+        vendorstats = db.session.query(Profile_StatisticsVendor).filter(f.id == Profile_StatisticsVendor.vendorid).first()
         if vendorstats:
             # gets average of vendor score
-            getratingsvendor = db.session.query(func.avg(Feedback.vendorrating))
-            getratingsvendor = getratingsvendor.filter(Feedback.vendorid == f.id)
+            getratingsvendor = db.session.query(func.avg(UserData_Feedback.vendorrating))
+            getratingsvendor = getratingsvendor.filter(UserData_Feedback.vendorid == f.id)
             avgratevendor = getratingsvendor.all()
             vendorscore = (avgratevendor[0][0])
 
@@ -28,8 +28,8 @@ def vendorrating():
                 vendorscore = 0
 
             # gets average of item score
-            getratingsitem = db.session.query(func.avg(Feedback.itemrating))
-            getratingsitem = getratingsitem.filter(Feedback.vendorid == f.id, Feedback.itemrating != 0)
+            getratingsitem = db.session.query(func.avg(UserData_Feedback.itemrating))
+            getratingsitem = getratingsitem.filter(UserData_Feedback.vendorid == f.id, UserData_Feedback.itemrating != 0)
             avgrateitem = getratingsitem.all()
             itemscore = (avgrateitem[0][0])
 

@@ -1,53 +1,55 @@
 from app import db
 
 
-class Userreviews(db.Model):
+class Profile_Userreviews(db.Model):
     __tablename__ = 'userreviews'
-    __bind_key__ = 'Agora_Market'
-    __table_args__ = {'useexisting': True}
+    __bind_key__ = 'clearnet'
+    __table_args__ = {"schema": "public", 'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     customer = db.Column(db.TEXT)
     order_id = db.Column(db.INTEGER)
     customer_id = db.Column(db.INTEGER)
     review = db.Column(db.TEXT)
-    dateofreview = db.Column(db.DATETIME)
+    dateofreview = db.Column(db.TIMESTAMP())
     rating = db.Column(db.INTEGER)
 
 
-class Feedbackcomments(db.Model):
+class Profile_FeedbackComments(db.Model):
     __tablename__ = 'feedbackcomments'
-    __bind_key__ = 'Agora_Market'
-    __table_args__ = {'useexisting': True}
+    __bind_key__ = 'clearnet'
+    __table_args__ = {"schema": "public", 'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.Text)
-    timestamp = db.Column(db.DateTime)
+    timestamp = db.Column(db.TIMESTAMP())
     author_id = db.Column(db.Integer)
     feedback_id = db.Column(db.Integer)
     sale_id = db.Column(db.Integer)
 
 
-class exptable(db.Model):
+class Profile_Exptable(db.Model):
     __tablename__ = 'exptable'
-    __bind_key__ = 'Agora_Market'
-    __table_args__ = {'useexisting': True}
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True, unique=True)
-    userid = db.Column(db.INTEGER)
+    __bind_key__ = 'clearnet'
+    __table_args__ = {"schema": "public", 'extend_existing': True}
+    id = db.Column(db.Integer, primary_key=True,
+                   autoincrement=True, unique=True)
+    user_id = db.Column(db.INTEGER)
     type = db.Column(db.INTEGER)
     amount = db.Column(db.INTEGER)
-    timestamp = db.Column(db.DATETIME)
+    timestamp = db.Column(db.TIMESTAMP())
 
 
-class StatisticsVendor(db.Model):
+class Profile_StatisticsVendor(db.Model):
     __tablename__ = 'statsvendor'
-    __bind_key__ = 'Agora_Market_Users'
-    __table_args__ = {'useexisting': True}
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True, unique=True)
+    __bind_key__ = 'clearnet'
+    __table_args__ = {"schema": "public", 'extend_existing': True}
+    id = db.Column(db.Integer, primary_key=True,
+                   autoincrement=True, unique=True)
     username = db.Column(db.Text)
     vendorid = db.Column(db.INTEGER)
     totalsales = db.Column(db.INTEGER)
     totaltrades = db.Column(db.INTEGER)
     totalreviews = db.Column(db.INTEGER)
-    startedselling = db.Column(db.DATETIME)
+    startedselling = db.Column(db.TIMESTAMP())
     vendorrating = db.Column(db.DECIMAL(4, 2))
     avgitemrating = db.Column(db.DECIMAL(4, 2))
     diffpartners = db.Column(db.INTEGER)
@@ -60,17 +62,18 @@ class StatisticsVendor(db.Model):
     totalusdmade = db.Column(db.DECIMAL(20, 2))
 
 
-class StatisticsUser(db.Model):
+class Profile_StatisticsUser(db.Model):
     __tablename__ = 'statsuserr'
-    __bind_key__ = 'Agora_Market_Users'
-    __table_args__ = {'useexisting': True}
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True, unique=True)
+    __bind_key__ = 'clearnet'
+    __table_args__ = {"schema": "public", 'extend_existing': True}
+    id = db.Column(db.Integer, primary_key=True,
+                   autoincrement=True, unique=True)
     username = db.Column(db.VARCHAR(50))
-    usernameid = db.Column(db.INTEGER)
+    user_id = db.Column(db.INTEGER)
     totalitemsbought = db.Column(db.INTEGER)
     totaltrades = db.Column(db.INTEGER)
     totalreviews = db.Column(db.INTEGER)
-    startedbuying = db.Column(db.DATETIME)
+    startedbuying = db.Column(db.TIMESTAMP())
     diffpartners = db.Column(db.INTEGER)
     totalachievements = db.Column(db.INTEGER)
     userrating = db.Column(db.DECIMAL(4, 2))
@@ -83,5 +86,6 @@ class StatisticsUser(db.Model):
     totalusdspent = db.Column(db.DECIMAL(20, 2))
 
 
+db.configure_mappers()
 db.create_all()
 db.session.commit()

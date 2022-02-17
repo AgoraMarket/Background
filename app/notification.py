@@ -1,5 +1,5 @@
 from app import db
-from app.classes.message import Notifications
+from app.classes.message import Message_Notifications
 
 #1 = sale
 #2 = message
@@ -27,12 +27,12 @@ from app.classes.message import Notifications
 #30 - incorrect address
 #30 - incorrect amount(to high or low)
 
-def notification(type, username, userid, salenumber, bitcoin):
+def notification(type, username, user_id, salenumber, bitcoin):
 
-    addnotice = Notifications(
+    addnotice = Message_Notifications(
                             type=type,
                             username=username,
-                            userid=userid,
+                            user_id=user_id,
                             salenumber=salenumber,
                             bitcoin=bitcoin,
                             read=1,

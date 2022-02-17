@@ -1,72 +1,67 @@
 from app import db
 
 
-class Categories(db.Model):
-    __tablename__ = 'category'
-    __bind_key__ = 'Agora_Market_Items'
-    __table_args__ = {'useexisting': True}
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True, unique=True)
-    name = db.Column(db.TEXT)
-
-
-class ItemtoDelete(db.Model):
+class Item_ItemtoDelete(db.Model):
     __tablename__ = 'itemtodelete'
-    __bind_key__ = 'Agora_Market_Crawler'
-    __table_args__ = {'useexisting': True}
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True, unique=True, nullable=False)
+    __bind_key__ = 'clearnet'
+    __table_args__ = {"schema": "public", 'extend_existing': True}
+    id = db.Column(db.Integer, primary_key=True,
+                   autoincrement=True, unique=True, nullable=False)
     itemid = db.Column(db.Integer)
 
 
-class ShoppingCart(db.Model):
+class Item_CheckoutShoppingCart(db.Model):
     __tablename__ = 'shoppingcart'
-    __bind_key__ = 'Agora_Market'
-    __table_args__ = {'useexisting': True}
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True, unique=True)
-    customer = db.Column(db.Text)
+    __bind_key__ = 'clearnet'
+    __table_args__ = {"schema": "public", 'extend_existing': True}
+    id = db.Column(db.Integer, primary_key=True,
+                   autoincrement=True, unique=True)
+    customer = db.Column(db.TEXT)
     customer_id = db.Column(db.INTEGER)
-    vendor = db.Column(db.Text)
+    vendor = db.Column(db.TEXT)
     vendor_id = db.Column(db.INTEGER)
     currency = db.Column(db.INTEGER)
-    title_of_item = db.Column(db.Text)
+    title_of_item = db.Column(db.TEXT)
     price_of_item = db.Column(db.DECIMAL(20, 2))
-    stringauctionid = db.Column(db.Text)
-    stringnodeid = db.Column(db.Text)
-    image_of_item = db.Column(db.Text)
+    string_auction_id = db.Column(db.TEXT)
+    string_node_id = db.Column(db.TEXT)
+    image_of_item = db.Column(db.TEXT)
     quantity_of_item = db.Column(db.INTEGER)
-    return_policy = db.Column(db.Text)
+    return_policy = db.Column(db.TEXT)
     savedforlater = db.Column(db.INTEGER)
     item_id = db.Column(db.INTEGER)
     vendorsupply = db.Column(db.INTEGER)
-    shippinginfo0 = db.Column(db.Text)
-    shippingdayleast0 = db.Column(db.INTEGER)
-    shippingdaymost0 = db.Column(db.INTEGER)
-    shippinginfo2 = db.Column(db.Text)
-    shippingprice2 = db.Column(db.DECIMAL(20, 2))
-    shippingdayleast2 = db.Column(db.INTEGER)
-    shippingdaymost2 = db.Column(db.INTEGER)
-    shippinginfo3 = db.Column(db.Text)
-    shippingprice3 = db.Column(db.DECIMAL(20, 2))
-    shippingdayleast3 = db.Column(db.INTEGER)
-    shippingdaymost3 = db.Column(db.INTEGER)
-    shippingfree = db.Column(db.INTEGER)
-    shippingtwo = db.Column(db.INTEGER)
-    shippingthree = db.Column(db.INTEGER)
+    shipping_info_0 = db.Column(db.TEXT)
+    shipping_day_least_0 = db.Column(db.INTEGER)
+    shipping_day_most_0 = db.Column(db.INTEGER)
+    shipping_info_2 = db.Column(db.TEXT)
+    shipping_price_2 = db.Column(db.DECIMAL(20, 2))
+    shipping_day_least_2 = db.Column(db.INTEGER)
+    shipping_day_most_2 = db.Column(db.INTEGER)
+    shipping_info_3 = db.Column(db.TEXT)
+    shipping_price_3 = db.Column(db.DECIMAL(20, 2))
+    shipping_day_least_3 = db.Column(db.INTEGER)
+    shipping_day_most_3 = db.Column(db.INTEGER)
+    shipping_free = db.Column(db.INTEGER)
+    shipping_two = db.Column(db.INTEGER)
+    shipping_three = db.Column(db.INTEGER)
     return_allowed = db.Column(db.INTEGER)
-    digital_currency1 = db.Column(db.INTEGER)
-    digital_currency2 = db.Column(db.INTEGER)
-    digital_currency3 = db.Column(db.INTEGER)
+    digital_currency_1 = db.Column(db.INTEGER)
+    digital_currency_2 = db.Column(db.INTEGER)
+    digital_currency_3 = db.Column(db.INTEGER)
     selected_currency = db.Column(db.INTEGER)
     selected_shipping = db.Column(db.INTEGER)
-    selected_shipping_description = db.Column(db.Text)
+    selected_shipping_description = db.Column(db.TEXT)
     final_shipping_price = db.Column(db.DECIMAL(20, 8))
     final_price = db.Column(db.DECIMAL(20, 8))
 
 
-class ShoppingCartTotal(db.Model):
+class Item_ShoppingCartTotal(db.Model):
     __tablename__ = 'shoppingcarttotal'
-    __bind_key__ = 'Agora_Market'
-    __table_args__ = {'useexisting': True}
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True, unique=True)
+    __bind_key__ = 'clearnet'
+    __table_args__ = {"schema": "public", 'extend_existing': True}
+    id = db.Column(db.Integer, primary_key=True,
+                   autoincrement=True, unique=True)
     customer = db.Column(db.INTEGER)
     btc_sumofitem = db.Column(db.INTEGER)
     btcprice = db.Column(db.DECIMAL(20, 8))
@@ -82,124 +77,104 @@ class ShoppingCartTotal(db.Model):
     btc_off = db.Column(db.DECIMAL(20, 8))
 
 
-class Cats(db.Model):
-    __tablename__ = 'cats'
-    __bind_key__ = 'Agora_Market_Items'
-    __table_args__ = {'useexisting': True}
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True, unique=True, nullable=False)
-    catid0 = db.Column(db.INTEGER, db.ForeignKey('marketitem.categoryid0', name="fk_cat5"), nullable=False)
-    catname0 = db.Column(db.TEXT)
-    formname = db.Column(db.TEXT)
-
-
-class marketItem(db.Model):
+class Item_MarketItem(db.Model):
     __tablename__ = 'marketitem'
-    __bind_key__ = 'Agora_Market_Items'
-    __table_args__ = {'useexisting': True}
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True, unique=True, nullable=False)
+    __bind_key__ = 'clearnet'
+    __table_args__ = {"schema": "public", 'extend_existing': True}
+    id = db.Column(db.Integer,
+                   primary_key=True,
+                   autoincrement=True,
+                   unique=True,
+                   nullable=False)
 
     online = db.Column(db.INTEGER)
-    created = db.Column(db.DATETIME)
+    created = db.Column(db.TIMESTAMP())
     price = db.Column(db.DECIMAL(20, 2))
-    vendor_name = db.Column(db.Text)
+    vendor_name = db.Column(db.String(140))
     vendor_id = db.Column(db.INTEGER)
-    stringauctionid = db.Column(db.Text)
-    stringnodeid = db.Column(db.Text)
+    string_auction_id = db.Column(db.String(40))
+    string_node_id = db.Column(db.String(40))
 
-    origincountry = db.Column(db.INTEGER)
-    destinationcountry = db.Column(db.INTEGER)
-    destinationcountrytwo = db.Column(db.INTEGER)
-    destinationcountrythree = db.Column(db.INTEGER)
-    destinationcountryfour = db.Column(db.INTEGER)
-    destinationcountryfive = db.Column(db.INTEGER)
+    origin_country = db.Column(db.INTEGER)
+    destination_country_one = db.Column(db.INTEGER)
+    destination_country_two = db.Column(db.INTEGER)
+    destination_country_three = db.Column(db.INTEGER)
+    destination_country_four = db.Column(db.INTEGER)
+    destination_country_five = db.Column(db.INTEGER)
 
-    itemtitlee = db.Column(db.Text)
-    itemcount = db.Column(db.INTEGER)
-    itemdescription = db.Column(db.Text)
-    keywords = db.Column(db.Text)
-    itemcondition = db.Column(db.INTEGER)
+    item_title = db.Column(db.TEXT)
+    item_count = db.Column(db.INTEGER)
+    item_description = db.Column(db.TEXT)
+    keywords = db.Column(db.TEXT)
+    item_condition = db.Column(db.INTEGER)
 
-    itemrefundpolicy = db.Column(db.Text)
+    item_refund_policy = db.Column(db.TEXT)
     return_allowed = db.Column(db.INTEGER)
 
-    imageone = db.Column(db.Text)
-    imagetwo = db.Column(db.Text)
-    imagethree = db.Column(db.Text)
-    imagefour = db.Column(db.Text)
-    imagefive = db.Column(db.Text)
-
+    image_one = db.Column(db.String(240))
+    image_two = db.Column(db.String(240))
+    image_three = db.Column(db.String(240))
+    image_four = db.Column(db.String(240))
+    image_five = db.Column(db.String(240))
 
     details = db.Column(db.BOOLEAN)
-    details1 = db.Column(db.Text)
-    details1answer = db.Column(db.Text)
-    details2 = db.Column(db.Text)
-    details2answer = db.Column(db.Text)
-    details3 = db.Column(db.Text)
-    details3answer = db.Column(db.Text)
-    details4 = db.Column(db.Text)
-    details4answer = db.Column(db.Text)
-    details5 = db.Column(db.Text)
-    details5answer = db.Column(db.Text)
-    details6 = db.Column(db.Text)
-    details6answer = db.Column(db.Text)
-    details7 = db.Column(db.Text)
-    details7answer = db.Column(db.Text)
-    details8 = db.Column(db.Text)
-    details8answer = db.Column(db.Text)
-    details9 = db.Column(db.Text)
-    details9answer = db.Column(db.Text)
-    details10 = db.Column(db.Text)
-    details10answer = db.Column(db.Text)
+    details_1 = db.Column(db.TEXT)
+    details_1_answer = db.Column(db.TEXT)
+    details_2 = db.Column(db.TEXT)
+    details_2_answer = db.Column(db.TEXT)
+    details_3 = db.Column(db.TEXT)
+    details_3_answer = db.Column(db.TEXT)
+    details_4 = db.Column(db.TEXT)
+    details_4_answer = db.Column(db.TEXT)
+    details_5 = db.Column(db.TEXT)
+    details_5_answer = db.Column(db.TEXT)
 
-    viewcount = db.Column(db.INTEGER)
-    itemrating = db.Column(db.DECIMAL(20, 2))
-    reviewcount = db.Column(db.INTEGER)
-    totalsold = db.Column(db.INTEGER)
+    view_count = db.Column(db.INTEGER)
+    item_rating = db.Column(db.DECIMAL(20, 2))
+    review_count = db.Column(db.INTEGER)
+    total_sold = db.Column(db.INTEGER)
 
-    shippinginfo0 = db.Column(db.Text)
-    shippingdayleast0 = db.Column(db.INTEGER)
-    shippingdaymost0 = db.Column(db.INTEGER)
-    shippinginfo2 = db.Column(db.Text)
-    shippingprice2 = db.Column(db.DECIMAL(20, 2))
-    shippingdayleast2 = db.Column(db.INTEGER)
-    shippingdaymost2 = db.Column(db.INTEGER)
-    shippinginfo3 = db.Column(db.Text)
-    shippingprice3 = db.Column(db.DECIMAL(20, 2))
-    shippingdayleast3 = db.Column(db.INTEGER)
-    shippingdaymost3 = db.Column(db.INTEGER)
+    shipping_free = db.Column(db.BOOLEAN)
+    shipping_two = db.Column(db.BOOLEAN)
+    shipping_three = db.Column(db.BOOLEAN)
 
-    notshipping1 = db.Column(db.INTEGER)
-    notshipping2 = db.Column(db.INTEGER)
-    notshipping3 = db.Column(db.INTEGER)
-    notshipping4 = db.Column(db.INTEGER)
-    notshipping5 = db.Column(db.INTEGER)
-    notshipping6 = db.Column(db.INTEGER)
-    shippingfree = db.Column(db.BOOLEAN)
-    shippingtwo = db.Column(db.INTEGER)
-    shippingthree = db.Column(db.INTEGER)
+    shipping_info_0 = db.Column(db.TEXT)
+    shipping_day_least_0 = db.Column(db.INTEGER)
+    shipping_day_most_0 = db.Column(db.INTEGER)
+    shipping_info_2 = db.Column(db.TEXT)
+    shipping_price_2 = db.Column(db.DECIMAL(20, 2))
+    shipping_day_least_2 = db.Column(db.INTEGER)
+    shipping_day_most_2 = db.Column(db.INTEGER)
+    shipping_info_3 = db.Column(db.TEXT)
+    shipping_price_3 = db.Column(db.DECIMAL(20, 2))
+    shipping_day_least_3 = db.Column(db.INTEGER)
+    shipping_day_most_3 = db.Column(db.INTEGER)
+
+    not_shipping_1 = db.Column(db.INTEGER)
+    not_shipping_2 = db.Column(db.INTEGER)
+    not_shipping_3 = db.Column(db.INTEGER)
+    not_shipping_4 = db.Column(db.INTEGER)
+    not_shipping_5 = db.Column(db.INTEGER)
+    not_shipping_6 = db.Column(db.INTEGER)
 
     currency = db.Column(db.INTEGER)
-    digital_currency1 = db.Column(db.INTEGER)
-    digital_currency2 = db.Column(db.INTEGER)
-    digital_currency3 = db.Column(db.INTEGER)
+    digital_currency_1 = db.Column(db.INTEGER)
+    digital_currency_2 = db.Column(db.INTEGER)
+    digital_currency_3 = db.Column(db.INTEGER)
 
-    # Protos Item
-    amazonid = db.Column(db.TEXT)
-    amazon_last_checked = db.Column(db.DateTime)
+    # Category_Categories
+    category_name_0 = db.Column(db.String(140))
+    category_id_0 = db.Column(db.Integer)
 
-    # categories
-    categoryname0 = db.Column(db.Text)
-    categoryid0 = db.Column(db.INTEGER, db.ForeignKey('cats.catid0'))
-
-    aditem = db.Column(db.INTEGER)
-    aditem_level = db.Column(db.INTEGER)
-    aditem_timer = db.Column(db.DATETIME)
+    ad_item = db.Column(db.BOOLEAN)
+    ad_item_level = db.Column(db.INTEGER)
+    ad_item_timer = db.Column(db.TIMESTAMP())
 
     def __str__(self):
-        return 'marketItem %s' % self.id
+        return 'marketitem %s' % self.id
 
     def __repr__(self):
-        return '<User %r>' % self.username
+        return '<Auth_User %r>' % self.username
 
 
 db.configure_mappers()

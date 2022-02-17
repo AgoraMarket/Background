@@ -1,61 +1,58 @@
 # coding=utf-8
-from werkzeug.security import generate_password_hash, check_password_hash
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-from flask import current_app
 from app import db
 from datetime import datetime
 
 
-class UserFees(db.Model):
+class Auth_UserFees(db.Model):
     __tablename__ = 'userfees'
-    __bind_key__ = 'Agora_Market_Users'
-    __table_args__ = {'useexisting': True}
+    __bind_key__ = 'clearnet'
+    __table_args__ = {"schema": "public", 'extend_existing': True}
 
-    id = db.Column(db.Integer, autoincrement=True, primary_key=True, unique=True)
-    userid = db.Column(db.INTEGER)
+    id = db.Column(db.Integer, autoincrement=True,
+                   primary_key=True, unique=True)
+    user_id = db.Column(db.INTEGER)
     buyerfee = db.Column(db.DECIMAL(6, 4))
-    buyerfee_time = db.Column(db.DATETIME)
+    buyerfee_time = db.Column(db.TIMESTAMP())
     vendorfee = db.Column(db.DECIMAL(6, 4))
-    vendorfee_time = db.Column(db.DATETIME)
+    vendorfee_time = db.Column(db.TIMESTAMP())
 
 
-class AccountSeedWords(db.Model):
+class Auth_AccountSeedWords(db.Model):
     __tablename__ = 'AccountSeedWords'
-    __bind_key__ = 'Agora_Market_Users'
-    __table_args__ = {'useexisting': True}
+    __bind_key__ = 'clearnet'
+    __table_args__ = {"schema": "public", 'extend_existing': True}
 
-    id = db.Column(db.Integer, autoincrement=True, primary_key=True, unique=True)
-    userid = db.Column(db.INTEGER)
-
-    word00 = db.Column(db.String(30))
-    word01 = db.Column(db.String(30))
-    word02 = db.Column(db.String(30))
-    word03 = db.Column(db.String(30))
-    word04 = db.Column(db.String(30))
-    word05 = db.Column(db.String(30))
-
-    wordstring = db.column(db.text)
-
+    id = db.Column(db.Integer, autoincrement=True,
+                   primary_key=True, unique=True)
+    user_id = db.Column(db.INTEGER)
+    word00 = db.Column(db.VARCHAR(30))
+    word01 = db.Column(db.VARCHAR(30))
+    word02 = db.Column(db.VARCHAR(30))
+    word03 = db.Column(db.VARCHAR(30))
+    word04 = db.Column(db.VARCHAR(30))
+    word05 = db.Column(db.VARCHAR(30))
+    wordstring = db.Column(db.TEXT)
 
 
-class User( db.Model):
+class Auth_User(db.Model):
     __tablename__ = 'users'
-    __bind_key__ = 'Agora_Market_Users'
-    __table_args__ = {'useexisting': True}
+    __bind_key__ = 'clearnet'
+    __table_args__ = {"schema": "public", 'extend_existing': True}
 
-    id = db.Column(db.Integer, autoincrement=True, primary_key=True, unique=True)
-    username = db.Column(db.Text)
-    password_hash = db.Column(db.Text)
+    id = db.Column(db.Integer, autoincrement=True,
+                   primary_key=True, unique=True)
+    username = db.Column(db.TEXT)
+    password_hash = db.Column(db.TEXT)
     member_since = db.Column(db.TIMESTAMP(), default=datetime.utcnow())
-    email = db.Column(db.Text)
-    wallet_pin = db.Column(db.Text)
-    profileimage = db.Column(db.Text)
-    stringuserdir = db.Column(db.Text)
+    email = db.Column(db.TEXT)
+    wallet_pin = db.Column(db.TEXT)
+    profileimage = db.Column(db.TEXT)
+    stringuserdir = db.Column(db.TEXT)
     bio = db.Column(db.TEXT)
-    country = db.Column(db.Text)
+    country = db.Column(db.TEXT)
     currency = db.Column(db.INTEGER)
     vendor_account = db.Column(db.INTEGER)
-    selling_from = db.Column(db.Text)
+    selling_from = db.Column(db.TEXT)
     last_seen = db.Column(db.TIMESTAMP(), default=datetime.utcnow())
     admin = db.Column(db.INTEGER)
     admin_role = db.Column(db.INTEGER)
@@ -63,61 +60,17 @@ class User( db.Model):
     fails = db.Column(db.INTEGER)
     locked = db.Column(db.INTEGER)
     vacation = db.Column(db.INTEGER)
-    shopping_timer = db.Column(db.DATETIME)
-    lasttraded_timer = db.Column(db.DATETIME)
+    shopping_timer = db.Column(db.TIMESTAMP())
+    lasttraded_timer = db.Column(db.TIMESTAMP())
     shard = db.Column(db.INTEGER)
-    protosuser = db.Column(db.INTEGER)
     usernode = db.Column(db.INTEGER)
     affiliate_account = db.Column(db.INTEGER)
     confirmed = db.Column(db.INTEGER)
     passwordpinallowed = db.Column(db.INTEGER)
 
-    @staticmethod
-    def cryptpassword(password):
-        return generate_password_hash(password)
 
-    @staticmethod
-    def decryptpassword(pwdhash, password):
-        return check_password_hash(pwdhash, password)
 
-    def is_authenticated(self):
-        return True
 
-    def is_active(self):
-        return True
-
-    def is_anonymous(self):
-        return False
-
-    def get_id(self):
-        return self.id
-
-    def generate_auth_token(self, expiration):
-        s = Serializer(current_app.config['SECRET_KEY'],
-                       expires_in=expiration)
-
-        return s.dumps({'id': self.id}).decode('ascii')
-
-    def confirm(self, token):
-        s = Serializer(current_app.config['SECRET_KEY'])
-
-        try:
-            data = s.loads(token)
-        except:
-            return False
-        if data.get('confirm') != self.id:
-            return False
-
-        self.confirmed = True
-        db.session.add(self)
-
-        return True
-
-    @staticmethod
-    def verify_auth_token(token):
-        s = Serializer(current_app.config['SECRET_KEY'])
-        try:
-            data = s.loads(token)
-        except:
-            return None
-        return User.query.get(data['id'])
+db.configure_mappers()
+db.create_all()
+db.session.commit()

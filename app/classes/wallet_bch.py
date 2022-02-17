@@ -1,15 +1,16 @@
 from app import db
 from datetime import datetime
 
-class BchWallet(db.Model):
+
+class Bch_Wallet(db.Model):
     __tablename__ = 'bch_wallet'
-    __bind_key__ = 'avengers'
-    __table_args__ = {"schema": "avengers_wallet_bch", "useexisting": True}
+    __bind_key__ = 'clearnet'
+    __table_args__ = {"schema": "public", 'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(db.INTEGER, db.ForeignKey('avengers_user.users.id'))
+    user_id = db.Column(db.INTEGER)
     currentbalance = db.Column(db.DECIMAL(20, 8))
     address1 = db.Column(db.TEXT)
-    address1status = db.Column(db.INTEGER, )
+    address1status = db.Column(db.INTEGER)
     address2 = db.Column(db.TEXT)
     address2status = db.Column(db.INTEGER)
     address3 = db.Column(db.TEXT)
@@ -17,40 +18,40 @@ class BchWallet(db.Model):
     locked = db.Column(db.INTEGER)
     transactioncount = db.Column(db.INTEGER)
     unconfirmed = db.Column(db.DECIMAL(20, 8))
+    shard = db.Column(db.INTEGER)
 
 
-class BchPrices(db.Model):
-    __tablename__ = 'prices_bch'
-    __bind_key__ = 'avengers'
-    __table_args__ = {"schema": "avengers_main", 'useexisting': True}
+class Bch_Prices(db.Model):
+    __tablename__ = 'prices_btc_cash'
+    __bind_key__ = 'clearnet'
+    __table_args__ = {"schema": "public", 'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     price = db.Column(db.DECIMAL(50, 2))
+    currency_id = db.Column(db.INTEGER)
+    percent_change_twentyfour = db.Column(db.DECIMAL(50, 2))
 
-
-class BchTransOrphan(db.Model):
+class Bch_WalletTransferOrphan(db.Model):
     __tablename__ = 'bch_transorphan'
-    __bind_key__ = 'avengers'
-    __table_args__ = {"schema": "avengers_wallet_bch","useexisting": True}
+    __bind_key__ = 'clearnet'
+    __table_args__ = {"schema": "public", 'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     bch = db.Column(db.DECIMAL(20, 8))
     bchaddress = db.Column(db.TEXT)
     txid = db.Column(db.TEXT)
 
 
-class BchUnconfirmed(db.Model):
+class Bch_WalletUnconfirmed(db.Model):
     __tablename__ = 'bch_unconfirmed'
-    __bind_key__ = 'avengers'
-    __table_args__ = {"schema": "avengers_wallet_bch", "useexisting": True}
+    __bind_key__ = 'clearnet'
+    __table_args__ = {"schema": "public", 'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
-    user_id = db.Column(db.INTEGER, db.ForeignKey('avengers_user.users.id'))
-
+    user_id = db.Column(db.INTEGER)
     unconfirmed1 = db.Column(db.DECIMAL(20, 8))
     unconfirmed2 = db.Column(db.DECIMAL(20, 8))
     unconfirmed3 = db.Column(db.DECIMAL(20, 8))
     unconfirmed4 = db.Column(db.DECIMAL(20, 8))
     unconfirmed5 = db.Column(db.DECIMAL(20, 8))
-
     txid1 = db.Column(db.TEXT)
     txid2 = db.Column(db.TEXT)
     txid3 = db.Column(db.TEXT)
@@ -58,10 +59,10 @@ class BchUnconfirmed(db.Model):
     txid5 = db.Column(db.TEXT)
 
 
-class BchWalletWork(db.Model):
+class Bch_WalletWork(db.Model):
     __tablename__ = 'bch_walletwork'
-    __bind_key__ = 'avengers'
-    __table_args__ = {"schema": "avengers_wallet_bch", "useexisting": True}
+    __bind_key__ = 'clearnet'
+    __table_args__ = {"schema": "public", 'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.INTEGER)
     type = db.Column(db.INTEGER)
@@ -72,30 +73,31 @@ class BchWalletWork(db.Model):
     txtcomment = db.Column(db.TEXT)
 
 
-class BchWalletAddresses(db.Model):
+class Bch_WalletAddresses(db.Model):
     __tablename__ = 'bch_walletaddresses'
-    __bind_key__ = 'avengers'
-    __table_args__ = {"schema": "avengers_wallet_bch", "useexisting": True}
+    __bind_key__ = 'clearnet'
+    __table_args__ = {"schema": "public", 'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     bchaddress = db.Column(db.TEXT)
     status = db.Column(db.INTEGER)
+    shard = db.Column(db.INTEGER)
 
 
-class BchWalletFee(db.Model):
+class Bch_WalletFee(db.Model):
     __tablename__ = 'bch_walletfee'
-    __bind_key__ = 'avengers'
-    __table_args__ = {"schema": "avengers_wallet_bch", "useexisting": True}
+    __bind_key__ = 'clearnet'
+    __table_args__ = {"schema": "public", 'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     bch = db.Column(db.DECIMAL(20, 8))
 
 
-class TransactionsBch(db.Model):
+class Bch_WalletTransactions(db.Model):
     __tablename__ = 'bch_transactions'
-    __bind_key__ = 'avengers'
-    __table_args__ = {"schema": "avengers_wallet_bch", "useexisting": True}
+    __bind_key__ = 'clearnet'
+    __table_args__ = {"schema": "public", 'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     category = db.Column(db.INTEGER)
-    user_id = db.Column(db.INTEGER, db.ForeignKey('avengers_user.users.id'))
+    user_id = db.Column(db.INTEGER)
     senderid = db.Column(db.INTEGER)
     confirmations = db.Column(db.INTEGER)
     txid = db.Column(db.TEXT)
@@ -114,3 +116,7 @@ class TransactionsBch(db.Model):
     confirmed_fee = db.Column(db.DECIMAL(20, 8))
     digital_currency = db.Column(db.INTEGER)
 
+
+db.configure_mappers()
+db.create_all()
+db.session.commit()

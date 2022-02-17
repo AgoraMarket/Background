@@ -1,5 +1,5 @@
 from app import db
-from app.classes.profile import exptable
+from app.classes.profile import Profile_Exptable
 from datetime import datetime
 from datetime import timedelta
 
@@ -13,8 +13,8 @@ def deleteoldexp():
     """
 
     olderthanfourweeks = datetime.utcnow() - (timedelta(weeks=25))
-    getexp = db.session.query(exptable)
-    getexp = getexp.filter(exptable.timestamp < olderthanfourweeks)
+    getexp = db.session.query(Profile_Exptable)
+    getexp = getexp.filter(Profile_Exptable.timestamp < olderthanfourweeks)
     getallexp = getexp.all()
 
     for f in getallexp:

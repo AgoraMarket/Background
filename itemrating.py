@@ -1,8 +1,8 @@
 from app import db
 from sqlalchemy import func
 
-from app.classes.item import marketItem
-from app.classes.userdata import Feedback
+from app.classes.item import Item_MarketItem
+from app.classes.userdata import UserData_Feedback
 
 # this script once a day
 
@@ -14,18 +14,18 @@ def marketitemrating():
     finds average for an item
     :return:
     """
-    item = db.session.query(marketItem).all()
+    item = db.session.query(Item_MarketItem).all()
     for f in item:
         if f:
             # count of how many
-            getratings = db.session.query(Feedback)
-            getratings = getratings.filter(Feedback.type == 1)
-            getratings = getratings.filter(Feedback.item_id == f.id)
+            getratings = db.session.query(UserData_Feedback)
+            getratings = getratings.filter(UserData_Feedback.type == 1)
+            getratings = getratings.filter(UserData_Feedback.item_id == f.id)
             rate = getratings.count()
 
             # gets average of item score
-            getratingsitem = db.session.query(func.avg(Feedback.itemrating))
-            getratingsitem = getratingsitem.filter(Feedback.item_id == f.id)
+            getratingsitem = db.session.query(func.avg(UserData_Feedback.itemrating))
+            getratingsitem = getratingsitem.filter(UserData_Feedback.item_id == f.id)
             avgrateitem = getratingsitem.all()
             try:
                 itemscore = (avgrateitem[0][0])

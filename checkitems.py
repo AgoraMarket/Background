@@ -1,10 +1,10 @@
 from app import db
-from app.classes.item import marketItem
+from app.classes.item import Item_MarketItem
 from decimal import Decimal
 
 
 def turnoffmarketitems():
-    markitem = db.session.query(marketItem).all()
+    markitem = db.session.query(Item_MarketItem).all()
     for specific_item in markitem:
 
         if specific_item.online == 1:

@@ -30,21 +30,22 @@ itembonus = 0
 
 def exppoint(user, price, type, quantity, currency):
     from app import db
-    from app.classes.profile import exptable
-    from app.classes.achievements import UserAchievements
-    from app.common.functions import btc_cash_convertlocaltobtc, btc_cash_converttolocal
+    from app.classes.profile import Profile_Exptable
+    from app.classes.achievements import Achievements_UserAchievements
+    from app.common.functions import convert_local_to_bch, convert_to_local_bch
     from decimal import Decimal
     from datetime import datetime
-    from app.achievements.e import levelawards
+    from app.achs.e import levelawards
 
     now = datetime.utcnow()
     # get current user stats
-    getuser = db.session.query(UserAchievements)
-    getuser = getuser.filter(UserAchievements.userid == user)
-    guser = getuser.first()
+    guser = db.session\
+        .query(Achievements_UserAchievements)\
+        .filter(Achievements_UserAchievements.user_id == user)\
+        .first()
     # current user points
 
-    currentPoints = guser.experiencepoints
+    current_points = guser.experiencepoints
     if 1 <= guser.level <= 3:
         experienceperlevel = 300
     elif 4 <= guser.level <= 7:
@@ -70,19 +71,18 @@ def exppoint(user, price, type, quantity, currency):
     else:
         experienceperlevel = 1000
 
-
     # get user exp table
     if currency == 0:
         # convert btc to usd
-        y = btc_cash_converttolocal(amount=price, currency=1)
+        y = convert_to_local_bch(amount=price, currency=1)
     elif currency == 1:
         # no converting
         y = price
     else:
         # convert to btc then to usd
-        x = btc_cash_convertlocaltobtc(amount=price, currency=currency)
+        x = convert_local_to_bch(amount=price, currency=currency)
         # convert to usd
-        y = btc_cash_converttolocal(amount=Decimal(x), currency=1)
+        y = convert_to_local_bch(amount=Decimal(x), currency=1)
 
     # If they sold or bought something
     if type == 1:
@@ -113,18 +113,19 @@ def exppoint(user, price, type, quantity, currency):
             return bonuspercent
 
         amountspent = y*quantity
-        percent = percentage(percent=((amountspent)), whole=standardpricefactor)
+        percent = percentage(percent=((amountspent)),
+                             whole=standardpricefactor)
         adjusted = bonus(percent=percent)
         points = points_sale
-        addpoints = int((currentPoints + points + adjusted + itembonus))
+        addpoints = int((current_points + points + adjusted + itembonus))
         levels_up, exp_to_next = divmod(addpoints, experienceperlevel)
 
         guser.experiencepoints = exp_to_next
         guser.level = guser.level + levels_up
         exp = int(points + adjusted + itembonus)
 
-        exptot = exptable(
-            userid=user,
+        exptot = Profile_Exptable(
+            user_id=user,
             type=1,
             amount=exp,
             timestamp=now,
@@ -132,8 +133,6 @@ def exppoint(user, price, type, quantity, currency):
 
         db.session.add(guser)
         db.session.add(exptot)
-        db.session.commit()
-
 
     # vendor review
     elif type == 2:
@@ -155,22 +154,20 @@ def exppoint(user, price, type, quantity, currency):
                 return adjustment
 
         adjusted = adjrating(quantity=quantity)
-        addpoints = int((currentPoints + adjusted))
+        addpoints = int((current_points + adjusted))
         exp = adjusted
         levels_up, exp_to_next = divmod(addpoints, experienceperlevel)
         guser.experiencepoints = exp_to_next
         guser.level = guser.level + levels_up
 
-        exp = exptable(
-            userid=user,
+        exp = Profile_Exptable(
+            user_id=user,
             type=2,
             amount=exp,
             timestamp=now,
         )
         db.session.add(guser)
         db.session.add(exp)
-        db.session.commit()
-
 
     # user left a review
     elif type == 3:
@@ -192,22 +189,20 @@ def exppoint(user, price, type, quantity, currency):
                 adjustment = 10
                 return adjustment
 
-        adjusted =adjrating(quantity=quantity)
-        addpoints = int((currentPoints + points_review + adjusted))
+        adjusted = adjrating(quantity=quantity)
+        addpoints = int((current_points + points_review + adjusted))
         exp = points_review + adjusted
         levels_up, exp_to_next = divmod(addpoints, experienceperlevel)
         guser.experiencepoints = exp_to_next
         guser.level = guser.level + levels_up
-        exp = exptable(
-            userid=user,
+        exp = Profile_Exptable(
+            user_id=user,
             type=3,
             amount=exp,
             timestamp=now,
         )
         db.session.add(guser)
-
         db.session.add(exp)
-        db.session.commit()
 
     # user recieved a review
     elif type == 6:
@@ -229,24 +224,23 @@ def exppoint(user, price, type, quantity, currency):
                 return adjustment
 
         adjusted = adjrating(quantity=quantity)
-        addpoints = int((currentPoints + points_review + adjusted))
+        addpoints = int((current_points + points_review + adjusted))
         exp = points_review + adjusted
         levels_up, exp_to_next = divmod(addpoints, experienceperlevel)
         guser.experiencepoints = exp_to_next
         guser.level = guser.level + levels_up
         db.session.add(guser)
-        db.session.commit()
+        db.session.flush()
         if guser.experiencepoints < 0:
             guser.experiencepoints = 0
-        exp = exptable(
-            userid=user,
+        exp = Profile_Exptable(
+            user_id=user,
             type=6,
             amount=exp,
             timestamp=now,
         )
         db.session.add(guser)
         db.session.add(exp)
-        db.session.commit()
 
     # Vendor recieved a review
     elif type == 7:
@@ -268,113 +262,98 @@ def exppoint(user, price, type, quantity, currency):
                 return adjustment
 
         adjusted = adjrating(quantity=quantity)
-
-        addpoints = int((currentPoints + points_review + adjusted))
-
+        addpoints = int((current_points + points_review + adjusted))
         exp = points_review + adjusted
-
         levels_up, exp_to_next = divmod(addpoints, experienceperlevel)
         guser.experiencepoints = exp_to_next
         guser.level = guser.level + levels_up
 
-        exp = exptable(
-            userid=user,
+        exp = Profile_Exptable(
+            user_id=user,
             type=7,
             amount=exp,
             timestamp=now,
         )
         db.session.add(guser)
         db.session.add(exp)
-        db.session.commit()
-
 
     # website feedback
     elif type == 4:
-        addpoints = int((currentPoints + points_feedback))
+        addpoints = int((current_points + points_feedback))
         exp = points_feedback
         levels_up, exp_to_next = divmod(addpoints, experienceperlevel)
         guser.experiencepoints = exp_to_next
         guser.level = guser.level + levels_up
-        exp = exptable(
-            userid=user,
+        exp = Profile_Exptable(
+            user_id=user,
             type=4,
             amount=exp,
             timestamp=now,
         )
         db.session.add(guser)
         db.session.add(exp)
-        db.session.commit()
-
-
 
     # Bonus marked as recieved
     elif type == 5:
-        addpoints = int((currentPoints + points_recieveditem))
+        addpoints = int((current_points + points_recieveditem))
         exp = points_recieveditem
         levels_up, exp_to_next = divmod(addpoints, experienceperlevel)
         guser.experiencepoints = exp_to_next
         guser.level = guser.level + levels_up
-        exp = exptable(
-            userid=user,
+        exp = Profile_Exptable(
+            user_id=user,
             type=5,
             amount=exp,
             timestamp=now,
         )
-
         db.session.add(guser)
         db.session.add(exp)
-        db.session.commit()
 
     # user cancelled
     elif type == 8:
-        addpoints = int((currentPoints + points_usercancel))
+        addpoints = int((current_points + points_usercancel))
         exp = points_usercancel
         levels_up, exp_to_next = divmod(addpoints, experienceperlevel)
         guser.experiencepoints = exp_to_next
         guser.level = guser.level + levels_up
 
-        exp = exptable(
-            userid=user,
+        exp = Profile_Exptable(
+            user_id=user,
             type=8,
-
             amount=exp,
             timestamp=now,
         )
-
         db.session.add(guser)
         db.session.add(exp)
-        db.session.commit()
 
     # vendor cancelled
     elif type == 9:
-        addpoints = int((currentPoints + points_vendorcancel))
+        addpoints = int((current_points + points_vendorcancel))
         exp = points_vendorcancel
         levels_up, exp_to_next = divmod(addpoints, experienceperlevel)
         guser.experiencepoints = exp_to_next
         guser.level = guser.level + levels_up
 
-        exp = exptable(
-            userid=user,
+        exp = Profile_Exptable(
+            user_id=user,
             type=9,
-
             amount=exp,
             timestamp=now,
         )
 
         db.session.add(guser)
         db.session.add(exp)
-        db.session.commit()
 
     # user returned item
     elif type == 10:
-        addpoints = int((currentPoints + points_return))
+        addpoints = int((current_points + points_return))
         exp = points_return
         levels_up, exp_to_next = divmod(addpoints, experienceperlevel)
         guser.experiencepoints = exp_to_next
         guser.level = guser.level + levels_up
 
-        exp = exptable(
-            userid=user,
+        exp = Profile_Exptable(
+            user_id=user,
             type=10,
             amount=exp,
             timestamp=now,
@@ -382,7 +361,6 @@ def exppoint(user, price, type, quantity, currency):
 
         db.session.add(guser)
         db.session.add(exp)
-        db.session.commit()
 
     # vendor sold something
     elif type == 11:
@@ -416,20 +394,19 @@ def exppoint(user, price, type, quantity, currency):
         percent = percentage(percent=(amountspent), whole=standardpricefactor)
         adjusted = bonus(percent=percent)
         points = points_sale
-        addpoints = int((currentPoints + points + adjusted + itembonus))
+        addpoints = int((current_points + points + adjusted + itembonus))
         levels_up, exp_to_next = divmod(addpoints, experienceperlevel)
         guser.experiencepoints = exp_to_next
         guser.level = guser.level + levels_up
         exp = int(points + adjusted + itembonus)
-        exptot = exptable(
-            userid=user,
+        exptot = Profile_Exptable(
+            user_id=user,
             type=11,
             amount=exp,
             timestamp=now,
         )
         db.session.add(guser)
         db.session.add(exptot)
-        db.session.commit()
 
     # bitcoin trade customer
     elif type == 15:
@@ -461,32 +438,32 @@ def exppoint(user, price, type, quantity, currency):
 
         # no quantity here
         amountspent = y
-        percent = percentage(percent=((amountspent)), whole=standardpricefactor_btc)
+        percent = percentage(percent=((amountspent)),
+                             whole=standardpricefactor_btc)
         adjusted = bonus(percent=percent)
         points = points_trade
-        addpoints = int((currentPoints + points + adjusted + btcbonus))
+        addpoints = int((current_points + points + adjusted + btcbonus))
         levels_up, exp_to_next = divmod(addpoints, experienceperlevel)
 
         guser.experiencepoints = exp_to_next
         guser.level = guser.level + levels_up
         exp = int(points + adjusted + btcbonus)
-        exptot = exptable(
-            userid=user,
+        exptot = Profile_Exptable(
+            user_id=user,
             type=15,
             amount=exp,
             timestamp=now,
         )
         db.session.add(guser)
         db.session.add(exptot)
-        db.session.commit()
 
-
-    #Digital Trade
+    # Digital Trade
     elif type == 20:
         def percentage(percent, whole):
             c = ((Decimal(percent) / Decimal(whole)) * 100)
             return int(Decimal(c))
         # adds more if they spent more
+
         def bonus(percent):
             if 0 == int(percent):
                 bonuspercent = 1
@@ -509,23 +486,23 @@ def exppoint(user, price, type, quantity, currency):
             return bonuspercent
 
         amountspent = y*quantity
-        percent = percentage(percent=((amountspent)), whole=standardpricefactor)
+        percent = percentage(percent=((amountspent)),
+                             whole=standardpricefactor)
         adjusted = bonus(percent=percent)
         points = points_sale
-        addpoints = int((currentPoints + points + adjusted + digbonus))
+        addpoints = int((current_points + points + adjusted + digbonus))
         levels_up, exp_to_next = divmod(addpoints, experienceperlevel)
         exp = int(points + adjusted + digbonus)
         guser.experiencepoints = exp_to_next
         guser.level = guser.level + levels_up
-        exptot = exptable(
-            userid=user,
+        exptot = Profile_Exptable(
+            user_id=user,
             type=20,
             amount=exp,
             timestamp=now,
         )
         db.session.add(guser)
         db.session.add(exptot)
-        db.session.commit()
 
     else:
         pass
@@ -535,7 +512,6 @@ def exppoint(user, price, type, quantity, currency):
         guser.level = 0
         guser.experiencepoints = 999
         db.session.add(guser)
-        db.session.commit()
 
     # achievements
-    levelawards(userid=guser.userid)
+    levelawards(user_id=guser.user_id)

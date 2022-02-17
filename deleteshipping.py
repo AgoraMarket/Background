@@ -1,12 +1,10 @@
 from app import db
-from app.classes.vendor import Orders
-from app.classes.service import shippingSecret, Tracking
-from datetime import \
-    datetime,\
-    timedelta
+from app.classes.vendor import Vendor_Orders
+from app.classes.service import Service_ShippingSecret, Service_Tracking
+import datetime
+
 
 # this script run once daily
-
 
 def deleteshipping():
 
@@ -15,17 +13,16 @@ def deleteshipping():
     :return:
     """
 
-    aweek = datetime.utcnow() - (timedelta(weeks=1))
-    acceptedorders = db.session.query(Orders)
-    acceptedorders = acceptedorders.filter(Orders.completed == 1,
-                                           Orders.age < aweek,
-                                           Orders.released == 1
+    aweek = datetime.datetime.utcnow() - (datetime.timedelta(weeks=1))
+    acceptedorders = db.session.query(Vendor_Orders)
+    acceptedorders = acceptedorders.filter(Vendor_Orders.completed == 1,
+                                           Vendor_Orders.age < aweek,
+                                           Vendor_Orders.released == 1
                                            )
     aorders = acceptedorders.all()
-
     for specificorder in aorders:
-        msg = db.session.query(shippingSecret).filter_by(orderid=specificorder.id).first()
-        gettracking = db.session.query(Tracking).filter_by(sale_id=specificorder.id).first()
+        msg = db.session.query(Service_ShippingSecret).filter_by(orderid=specificorder.id).first()
+        gettracking = db.session.query(Service_Tracking).filter_by(sale_id=specificorder.id).first()
         db.session.delete(msg)
         db.session.delete(gettracking)
     db.session.commit()

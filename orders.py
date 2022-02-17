@@ -5,10 +5,10 @@ from datetime import \
 from decimal import Decimal
 
 # Models
-from app.classes.vendor import Orders
-from app.classes.auth import User
-from app.classes.admin import AgoraFee
-from app.classes.affiliate import AffiliateOverview
+from app.classes.vendor import Vendor_Orders
+from app.classes.auth import Auth_User
+from app.classes.admin import Admin_ClearnetFee
+from app.classes.affiliate import Affiliate_Overview
 
 # End Models
 
@@ -17,24 +17,23 @@ from app.notification import \
 from app.exppoints import \
     exppoint
 from app.userdata.views import \
-    addtotalItemsBought, \
-    addtotalItemsSold, \
-    totalspentonitems, \
-    vendortotalmade, \
-    affstats
+    userdata_add_total_items_bought, \
+    userdata_add_total_items_sold, \
+    userdata_total_spent_on_item_bch, \
+    userdata_total_made_on_item_bch, \
+    userdata_aff_stats
 
-from app.wallet_btccash.wallet_btccash_work import \
-    btc_cash_sendCointoAgora, \
-    btc_cash_sendcointoaffiliate, \
-    btc_cash_sendCointoUser
+from app.wallet_bch.wallet_bch_work import\
+    bch_send_coin_to_clearnet,\
+    bch_send_coin_to_user,\
+    bch_send_coin_to_affiliate
 
 ##
 # this script should run every hour
 ##
 
-
 def markascompleted(itemid):
-    item = Orders.query.get(id=itemid)
+    item = Vendor_Orders.query.get(id=itemid)
     item.completed = 1
     item.disputed_order = 0
     item.new_order = 0
@@ -52,7 +51,7 @@ def markascompleted(itemid):
 
 
 def markascancelled(itemid):
-    item = Orders.query.get(id=itemid)
+    item = Vendor_Orders.query.get(id=itemid)
     item.completed = 1
     item.disputed_order = 0
     item.new_order = 0
@@ -75,10 +74,10 @@ def neworders_48hours():
     :return:
     """
 
-    acceptedorders = db.session.query(Orders)
-    acceptedorders = acceptedorders.filter(Orders.completed == 0)
-    acceptedorders = acceptedorders.filter(Orders.type == 1)
-    acceptedorders = acceptedorders.filter(Orders.new_order == 1)
+    acceptedorders = db.session.query(Vendor_Orders)
+    acceptedorders = acceptedorders.filter(Vendor_Orders.completed == 0)
+    acceptedorders = acceptedorders.filter(Vendor_Orders.type == 1)
+    acceptedorders = acceptedorders.filter(Vendor_Orders.new_order == 1)
     aorders = acceptedorders.all()
     for f in aorders:
         whenbought = f.age
@@ -88,24 +87,24 @@ def neworders_48hours():
         comment = "Vendor accept expired. Automatic refund for order number " + str(f.id)
         twoday = (whenbought + timedelta(days=2))
         if datetime.utcnow() > twoday:
-            # Order wasnt accepted in time=.  Give money back to customer
+            # Order was not accepted in time.  Give money back to customer
 
             # this function adds the work to db
-            btc_cash_sendCointoUser(amount=totalprice,
+            bch_send_coin_to_user(amount=totalprice,
                                    comment=comment,
-                                   userid=f.customer_id)
+                                   user_id=f.customer_id)
 
             # notify customer
             notification(type=6,
                          username=f.customer,
-                         userid=f.customer_id,
+                         user_id=f.customer_id,
                          salenumber=f.id,
                          bitcoin=f.totalprice)
 
             # notify vendor
             notification(type=6,
                          username=f.vendor,
-                         userid=f.vendor_id,
+                         user_id=f.vendor_id,
                          salenumber=f.id,
                          bitcoin=f.totalprice)
 
@@ -119,10 +118,10 @@ def acceptedorders_1week():
     #this function is for if the vendor didnt ship after 1 week. Cancel give back to customer
     :return:
     """
-    acceptedorders = db.session.query(Orders)
-    acceptedorders = acceptedorders.filter(Orders.completed == 0)
-    acceptedorders = acceptedorders.filter(Orders.type == 1)
-    acceptedorders = acceptedorders.filter(Orders.accepted_order == 1)
+    acceptedorders = db.session.query(Vendor_Orders)
+    acceptedorders = acceptedorders.filter(Vendor_Orders.completed == 0)
+    acceptedorders = acceptedorders.filter(Vendor_Orders.type == 1)
+    acceptedorders = acceptedorders.filter(Vendor_Orders.accepted_order == 1)
     aorders = acceptedorders.all()
     for f in aorders:
         whenbought = f.age
@@ -135,21 +134,21 @@ def acceptedorders_1week():
             # Order was accepted but not shipped..return back to customer
 
             # this function adds the work to db
-            btc_cash_sendCointoUser(amount=totalprice,
+            bch_send_coin_to_user(amount=totalprice,
                            comment=comment,
-                           userid=f.customer_id)
+                           user_id=f.customer_id)
 
             # notify customer
             notification(type=6,
                          username=f.customer,
-                         userid=f.customer_id,
+                         user_id=f.customer_id,
                          salenumber=f.id,
                          bitcoin=f.totalprice)
 
             # notify vendor
             notification(type=6,
                          username=f.vendor,
-                         userid=f.vendor_id,
+                         user_id=f.vendor_id,
                          salenumber=f.id,
                          bitcoin=f.totalprice)
 
@@ -165,10 +164,10 @@ def requestcancel_24rs():
     auto cancels and refunds user
     :return:
     """
-    acceptedorders = db.session.query(Orders)
-    acceptedorders = acceptedorders.filter(Orders.completed == 0)
-    acceptedorders = acceptedorders.filter(Orders.type == 0)
-    acceptedorders = acceptedorders.filter(Orders.request_cancel == 1)
+    acceptedorders = db.session.query(Vendor_Orders)
+    acceptedorders = acceptedorders.filter(Vendor_Orders.completed == 0)
+    acceptedorders = acceptedorders.filter(Vendor_Orders.type == 0)
+    acceptedorders = acceptedorders.filter(Vendor_Orders.request_cancel == 1)
     aorders = acceptedorders.all()
 
     for accorder in aorders:
@@ -182,25 +181,26 @@ def requestcancel_24rs():
         if datetime.utcnow() > nextday:
             # Order was accepted but not shipped..return back to customer
             # this function adds the work to db
-            btc_cash_sendCointoUser(amount=totalprice,
+            bch_send_coin_to_user(amount=totalprice,
                            comment=comment,
-                           userid=accorder.customer_id)
+                           user_id=accorder.customer_id)
 
             # notify customer
             notification(type=6,
                          username=accorder.customer,
-                         userid=accorder.customer_id,
+                         user_id=accorder.customer_id,
                          salenumber=accorder.id,
                          bitcoin=accorder.totalprice)
 
             # notify vendor
             notification(type=6,
                          username=accorder.vendor,
-                         userid=accorder.vendor_id,
+                         user_id=accorder.vendor_id,
                          salenumber=accorder.id,
                          bitcoin=accorder.totalprice)
 
             markascancelled(itemid=accorder.id)
+
     db.session.commit()
 
 
@@ -212,10 +212,10 @@ def returns_2days():
     :return:
     """
     # request return is 2
-    acceptedorders = db.session.query(Orders)
-    acceptedorders = acceptedorders.filter(Orders.completed == 0)
-    acceptedorders = acceptedorders.filter(Orders.request_return == 2)
-    acceptedorders = acceptedorders.filter(Orders.type == 1)
+    acceptedorders = db.session.query(Vendor_Orders)
+    acceptedorders = acceptedorders.filter(Vendor_Orders.completed == 0)
+    acceptedorders = acceptedorders.filter(Vendor_Orders.request_return == 2)
+    acceptedorders = acceptedorders.filter(Vendor_Orders.type == 1)
     aorders = acceptedorders.all()
 
     for accorder in aorders:
@@ -228,25 +228,26 @@ def returns_2days():
         if datetime.utcnow() > sevenday:
 
             # Autofinalize so give to vendor
-            btc_cash_sendCointoUser(amount=totalprice,
+            bch_send_coin_to_user(amount=totalprice,
                            comment=comment,
-                           userid=accorder.vendor_id)
+                           user_id=accorder.vendor_id)
 
             # notify customer
             notification(type=6,
                          username=accorder.customer,
-                         userid=accorder.customer_id,
+                         user_id=accorder.customer_id,
                          salenumber=accorder.id,
                          bitcoin=accorder.totalprice)
 
             # notify vendor
             notification(type=6,
                          username=accorder.vendor,
-                         userid=accorder.vendor_id,
+                         user_id=accorder.vendor_id,
                          salenumber=accorder.id,
                          bitcoin=accorder.totalprice)
 
             markascompleted(itemid=accorder.id)
+
     db.session.commit()
 
 
@@ -257,10 +258,10 @@ def returns_7days():
     :return:
     """
     # request return is 2
-    acceptedorders = db.session.query(Orders)
-    acceptedorders = acceptedorders.filter(Orders.completed == 0)
-    acceptedorders = acceptedorders.filter(Orders.request_return == 2)
-    acceptedorders = acceptedorders.filter(Orders.type == 1)
+    acceptedorders = db.session.query(Vendor_Orders)
+    acceptedorders = acceptedorders.filter(Vendor_Orders.completed == 0)
+    acceptedorders = acceptedorders.filter(Vendor_Orders.request_return == 2)
+    acceptedorders = acceptedorders.filter(Vendor_Orders.type == 1)
     aorders = acceptedorders.all()
 
     for accorder in aorders:
@@ -273,21 +274,21 @@ def returns_7days():
         if datetime.utcnow() > sevenday:
 
             # Autofinalize so give to vendor
-            btc_cash_sendCointoUser(amount=totalprice,
+            bch_send_coin_to_user(amount=totalprice,
                            comment=comment,
-                           userid=accorder.vendor_id)
+                           user_id=accorder.vendor_id)
 
             # notify customer
             notification(type=6,
                          username=accorder.customer,
-                         userid=accorder.customer_id,
+                         user_id=accorder.customer_id,
                          salenumber=accorder.id,
                          bitcoin=accorder.totalprice)
 
             # notify vendor
             notification(type=6,
                          username=accorder.vendor,
-                         userid=accorder.vendor_id,
+                         user_id=accorder.vendor_id,
                          salenumber=accorder.id,
                          bitcoin=accorder.totalprice)
 
@@ -301,10 +302,10 @@ def returns_14days():
     #after a return is marked as shipped by customer, vendor gets money in 14 days.  If not
     :return:
     """
-    acceptedorders = db.session.query(Orders)
-    acceptedorders = acceptedorders.filter(Orders.completed == 0)
-    acceptedorders = acceptedorders.filter(Orders.request_return == 3)
-    acceptedorders = acceptedorders.filter(Orders.type == 1)
+    acceptedorders = db.session.query(Vendor_Orders)
+    acceptedorders = acceptedorders.filter(Vendor_Orders.completed == 0)
+    acceptedorders = acceptedorders.filter(Vendor_Orders.request_return == 3)
+    acceptedorders = acceptedorders.filter(Vendor_Orders.type == 1)
     aorders = acceptedorders.all()
 
     for accorder in aorders:
@@ -317,21 +318,21 @@ def returns_14days():
         if datetime.utcnow() > nextday:
 
             # Autofinalize so give to user
-            btc_cash_sendCointoUser(amount=totalprice,
+            bch_send_coin_to_user(amount=totalprice,
                            comment=comment,
-                           userid=accorder.customer_id)
+                           user_id=accorder.customer_id)
 
             # notify customer
             notification(type=6,
                          username=accorder.customer,
-                         userid=accorder.customer_id,
+                         user_id=accorder.customer_id,
                          salenumber=accorder.id,
                          bitcoin=accorder.totalprice)
 
             # notify vendor
             notification(type=6,
                          username=accorder.vendor,
-                         userid=accorder.vendor_id,
+                         user_id=accorder.vendor_id,
                          salenumber=accorder.id,
                          bitcoin=accorder.totalprice)
 
@@ -346,19 +347,19 @@ def autofinalize_30days():
     :return:
     """
     # get the current fee
-    currentfee = AgoraFee.query.filter_by(id=1).first()
+    currentfee = Admin_ClearnetFee.query.filter_by(id=1).first()
     physicalitemfee = currentfee.itempurchase
 
-    acceptedorders = db.session.query(Orders)
-    acceptedorders = acceptedorders.filter(Orders.completed == 0)
-    acceptedorders = acceptedorders.filter(Orders.type == 1)
-    acceptedorders = acceptedorders.filter(Orders.waiting_order == 1)
-    acceptedorders = acceptedorders.filter(Orders.disputed_order == 0)
-    acceptedorders = acceptedorders.filter(Orders.request_return == 0)
+    acceptedorders = db.session.query(Vendor_Orders)
+    acceptedorders = acceptedorders.filter(Vendor_Orders.completed == 0)
+    acceptedorders = acceptedorders.filter(Vendor_Orders.type == 1)
+    acceptedorders = acceptedorders.filter(Vendor_Orders.waiting_order == 1)
+    acceptedorders = acceptedorders.filter(Vendor_Orders.disputed_order == 0)
+    acceptedorders = acceptedorders.filter(Vendor_Orders.request_return == 0)
     aorders = acceptedorders.all()
 
     for order_to_be_finalized in aorders:
-        getcustomer = db.session.query(User).filter(User.id == order_to_be_finalized.customer_id).first()
+        getcustomer = db.session.query(Auth_User).filter(Auth_User.id == order_to_be_finalized.customer_id).first()
         whenbought = order_to_be_finalized.age
         itemprice = Decimal(order_to_be_finalized.price)
         shipprice = Decimal(order_to_be_finalized.shipping_price)
@@ -373,8 +374,10 @@ def autofinalize_30days():
                 if order_to_be_finalized.affiliate_code != 0 and order_to_be_finalized.affiliate_discount_percent != 0:
                     # split the profit and how much affiliate gets
 
-                    getpromo = db.session.query(AffiliateOverview) \
-                        .filter(AffiliateOverview.promocode == order_to_be_finalized.affiliate_code).first()
+                    getpromo = db.session\
+                        .query(Affiliate_Overview)\
+                        .filter(Affiliate_Overview.promocode == order_to_be_finalized.affiliate_code)\
+                        .first()
 
                     # variables
                     promopercent = (Decimal(getpromo.aff_fee / 100))
@@ -396,39 +399,40 @@ def autofinalize_30days():
                     amount_to_protos = amounttomodify * feeforprotos
 
                     # order the amount sent
-                    btc_cash_sendcointoaffiliate(amount=amount_to_affiliate,
+                    bch_send_coin_to_affiliate(amount=amount_to_affiliate,
                                                  comment=order_to_be_finalized.id,
-                                                 userid=getpromo.userid)
+                                                 user_id=getpromo.user_id)
 
                     # amount = fee - affiliate fee
-                    btc_cash_sendCointoAgora(amount=amount_to_protos,
+                    bch_send_coin_to_clearnet(amount=amount_to_protos,
                                             comment=order_to_be_finalized.id,
                                             shard=getcustomer.shard)
 
                     # add affiliate stats
-                    affstats(userid=getpromo.userid,
+                    userdata_aff_stats(user_id=getpromo.user_id,
                              amount=amount_to_affiliate,
                              currency=2)
 
                 else:
                     # send normal fee- BTC
-                    btc_cash_sendCointoAgora(amount=thefee,
+                    bch_send_coin_to_clearnet(amount=thefee,
                                              comment=order_to_be_finalized.id,
                                              shard=getcustomer.shard)
 
                 # Autofinalize so give to vendor
                 # send price + shipping
-                btc_cash_sendCointoUser(amount=totalprice,
+                bch_send_coin_to_user(amount=totalprice,
                                         comment=order_to_be_finalized.id,
-                                        userid=order_to_be_finalized.vendor_id)
+                                        user_id=order_to_be_finalized.vendor_id)
 
             # BTC Cash
             else:
 
                 # split the profit and how much affiliate gets
                 if order_to_be_finalized.affiliate_code != 0 and order_to_be_finalized.affiliate_discount_percent != 0:
-                    getpromo = db.session.query(AffiliateOverview) \
-                        .filter(AffiliateOverview.promocode == order_to_be_finalized.affiliate_code)\
+                    getpromo = db.session\
+                    .query(Affiliate_Overview) \
+                        .filter(Affiliate_Overview.promocode == order_to_be_finalized.affiliate_code)\
                         .first()
 
                     # variables
@@ -450,35 +454,35 @@ def autofinalize_30days():
                     amount_to_protos = amounttomodify * feeforprotos
 
                     # percennt to affiliate
-                    btc_cash_sendcointoaffiliate(amount=amount_to_affiliate,
+                    bch_send_coin_to_affiliate(amount=amount_to_affiliate,
                                                  comment=order_to_be_finalized.id,
-                                                 userid=getpromo.userid)
+                                                 user_id=getpromo.user_id)
 
                     # percent to protoss
-                    btc_cash_sendCointoAgora(amount=amount_to_protos,
+                    bch_send_coin_to_clearnet(amount=amount_to_protos,
                                              comment=order_to_be_finalized.id,
                                              shard=getcustomer.shard)
 
                     # add affiliate stats
-                    affstats(userid=getpromo.userid,
+                    userdata_aff_stats(user_id=getpromo.user_id,
                              amount=amount_to_affiliate,
                              currency=2)
 
                 else:
                     # percent to protoss
-                    btc_cash_sendCointoAgora(amount=thefee,
+                    bch_send_coin_to_clearnet(amount=thefee,
                                              comment=order_to_be_finalized.id,
                                              shard=getcustomer.shard)
 
                 # Autofinalize so give to vendor - BTC CASH
-                btc_cash_sendCointoUser(amount=totalprice,
+                bch_send_coin_to_user(amount=totalprice,
                                         comment=order_to_be_finalized.id,
-                                        userid=order_to_be_finalized.vendor_id)
+                                        user_id=order_to_be_finalized.vendor_id)
 
             # notify vendor
             notification(type=6,
                          username=order_to_be_finalized.vendor,
-                         userid=order_to_be_finalized.vendor_id,
+                         user_id=order_to_be_finalized.vendor_id,
                          salenumber=order_to_be_finalized.id,
                          bitcoin=totalprice)
 
@@ -487,20 +491,20 @@ def autofinalize_30days():
 
             # add stats
             # Add total items bought
-            addtotalItemsBought(userid=order_to_be_finalized.customer_id,
+            userdata_add_total_items_bought(user_id=order_to_be_finalized.customer_id,
                                 howmany=order_to_be_finalized.quantity)
 
             # add total sold to vendor
-            addtotalItemsSold(userid=order_to_be_finalized.vendor_id,
+            userdata_add_total_items_sold(user_id=order_to_be_finalized.vendor_id,
                               howmany=order_to_be_finalized.quantity)
 
-            # BTC Spent by user
-            totalspentonitems(userid=order_to_be_finalized.customer_id,
+            # Bch Spent by user
+            userdata_total_spent_on_item_bch(user_id=order_to_be_finalized.customer_id,
                               howmany=order_to_be_finalized.quantity,
                               amount=order_to_be_finalized.price)
 
-            # BTC recieved by vendor
-            vendortotalmade(userid=order_to_be_finalized.vendor_id,
+            # Bch recieved by vendor
+            userdata_total_made_on_item_bch(user_id=order_to_be_finalized.vendor_id,
                             amount=order_to_be_finalized.price)
 
             # Give Vendor experience points
