@@ -67,23 +67,6 @@ def ping_user(f):
     return decorated_function_ping
 
 
-def website_offline(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        status = db.session.query(Admin_WebsiteOffline).filter_by(id=1).first()
-        if status.webstatus == 0:
-            pass
-        elif status.webstatus == 1:
-            return redirect(url_for('main.scheduledmaintenance'))
-        elif status.webstatus == 2:
-            return redirect(url_for('main.offline'))
-        elif status.webstatus == 3:
-            return redirect(url_for('main.busy'))
-        else:
-            pass
-        return f(*args, **kwargs)
-    return decorated_function
-
 
 def login_required(f):
     @wraps(f)

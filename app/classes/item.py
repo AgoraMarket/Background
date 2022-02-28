@@ -10,7 +10,7 @@ class Item_ItemtoDelete(db.Model):
     itemid = db.Column(db.Integer)
 
 
-class Item_CheckoutShoppingCart(db.Model):
+class Checkout_CheckoutShoppingCart(db.Model):
     __tablename__ = 'shoppingcart'
     __bind_key__ = 'clearnet'
     __table_args__ = {"schema": "public", 'extend_existing': True}
@@ -56,7 +56,7 @@ class Item_CheckoutShoppingCart(db.Model):
     final_price = db.Column(db.DECIMAL(20, 8))
 
 
-class Item_ShoppingCartTotal(db.Model):
+class Checkout_ShoppingCartTotal(db.Model):
     __tablename__ = 'shoppingcarttotal'
     __bind_key__ = 'clearnet'
     __table_args__ = {"schema": "public", 'extend_existing': True}

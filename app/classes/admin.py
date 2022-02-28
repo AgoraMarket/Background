@@ -80,13 +80,6 @@ class Admin_ClearnetHoldingsBCH(db.Model):
     total = db.Column(db.DECIMAL(20, 8))
 
 
-class Admin_WebsiteOffline(db.Model):
-    __tablename__ = 'websiteoffline'
-    __bind_key__ = 'clearnet'
-    __table_args__ = {"schema": "public", 'extend_existing': True}
-    id = db.Column(db.Integer, primary_key=True,
-                   autoincrement=True, unique=True)
-    webstatus = db.Column(db.INTEGER)
 
 
 class Admin_Flagged(db.Model):
