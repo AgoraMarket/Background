@@ -1,15 +1,63 @@
 import os
-from app import db
 from app.classes.wallet_bch import Bch_Prices
-from app.classes.models import Query_Margin
+from app.classes.wallet_btc import Btc_Prices
+from app.classes.wallet_xmr import Xmr_Prices
 import random
 import string
 from decimal import Decimal
 
 
+def convert_to_local_bch(amount, currency):
+    getcurrentprice = Bch_Prices.query.filter_by(currency_id=currency).first()
+    bt = getcurrentprice.price
+    converted_price = Decimal(bt) * Decimal(amount)
+    price_in_local_currency = floating_decimals(converted_price, 2)
+    return price_in_local_currency
+
+
+def convert_local_to_bch(amount, currency):
+    getcurrentprice = Bch_Prices.query.filter_by(currency_id=currency).first()
+    current_price = getcurrentprice.price
+    converted_price = Decimal(amount) / Decimal(current_price)
+    price_in_floats = floating_decimals(converted_price, 8)
+    return price_in_floats
+
+
+def convert_to_local_btc(amount, currency):
+    getcurrentprice = Btc_Prices.query.filter_by(currency_id=currency).first()
+    current_price = getcurrentprice.price
+    converted_price = Decimal(current_price) * Decimal(amount)
+    price_in_local_currency = floating_decimals(converted_price, 2)
+    return price_in_local_currency
+
+
+def convert_local_to_btc(amount, currency):
+    getcurrentprice = Btc_Prices.query.filter_by(currency_id=currency).first()
+    current_price = getcurrentprice.price
+    converted_price = Decimal(amount) / Decimal(current_price)
+    price_in_floats = floating_decimals(converted_price, 8)
+    return price_in_floats
+
+
+def convert_to_local_xmr(amount, currency):
+    getcurrentprice = Xmr_Prices.query.filter_by(currency_id=currency).first()
+    current_price = getcurrentprice.price
+    converted_price = Decimal(current_price) * Decimal(amount)
+    price_in_local_currency = floating_decimals(converted_price, 2)
+    return price_in_local_currency
+
+
+def convert_local_to_xmr(amount, currency):
+    getcurrentprice = Xmr_Prices.query.filter_by(currency_id=currency).first()
+    current_price = getcurrentprice.price
+    converted_price = Decimal(amount) / Decimal(current_price)
+    price_in_floats = floating_decimals(converted_price, 12)
+    return price_in_floats
+
+
 def genericprofile(path):
     user_id = str(path)
-    cmd = 'cp /home/droid/clearnet_webapp/info/user/user-unknown.png /home/droid/info/user/' + user_id
+    cmd = 'cp /home/clearnet_webapp/info/user/user-unknown.png /home/info/user/' + user_id
     try:
         os.system(cmd)
     except OSError:  # Python >2.7
@@ -19,11 +67,8 @@ def genericprofile(path):
 def mkdir_p(path):
     try:
         os.makedirs(path, 0o755)
-    except OSError:  # Python >2.7
-        if os.path.isdir(path):
-            pass
-        else:
-            raise
+    except:
+        pass
 
 
 def itemlocation(x):
@@ -153,7 +198,7 @@ def userimagelocation(user_id):
 
 
 def floating_decimals(f_val, dec):
-    prc = "{:."+str(dec)+"f}" # first cast decimal as str
+    prc = "{:."+str(dec)+"f}"  # first cast decimal as str
     return Decimal(prc.format(f_val))
 
 
@@ -175,26 +220,3 @@ def id_generator_picture4(size=30, chars=string.ascii_uppercase + string.digits)
 
 def id_generator_picture5(size=30, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
-
-
-def convert_to_local_bch(amount, currency):
-    getcurrentprice = db.session.query(Bch_Prices) \
-        .filter_by(currency_id=currency).first()
-
-    bt = getcurrentprice.price
-    z = Decimal(bt) * Decimal(amount)
-    c = floating_decimals(z, 2)
-    return c
-
-
-def convert_local_to_bch(amount, currency):
-    getcurrentprice = db.session.query(
-        Bch_Prices).filter_by(currency_id=currency).first()
-    bt = getcurrentprice.price
-    z = Decimal(amount) / Decimal(bt)
-    c = floating_decimals(z, 8)
-    return c
-
-
-
-

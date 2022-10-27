@@ -1,6 +1,7 @@
 from app import db
-from app.classes.auth import Auth_User
-from app.classes.profile import Profile_Userreviews, Profile_StatisticsUser
+from app.classes.user import User
+from app.classes.profile import  Profile_StatisticsUser
+from app.classes.feedback import Feedback_Feedback
 from decimal import Decimal
 from sqlalchemy import func
 
@@ -8,26 +9,43 @@ from sqlalchemy import func
 
 
 def userrating():
-    user = db.session.query(Auth_User).all()
+    change_order = False
+    user = db.session\
+        .query(User)\
+        .all()
     for f in user:
-        userstats = db.session.query(Profile_StatisticsUser).filter(f.id == Profile_StatisticsUser.user_id).first()
+        # get stats to user
+        userstats = db.session\
+            .query(Profile_StatisticsUser)\
+            .filter(f.uuid == Profile_StatisticsUser.user_uuid)\
+            .first()
         if userstats:
-            # gets avg
-            getratings = db.session.query(func.avg(Profile_Userreviews.rating))
-            getratings = getratings.filter(Profile_Userreviews.customer_id == f.id)
-            avgrate = getratings.all()
+            
+            # gets avg from query
+            getratings = db.session\
+                .query(func.avg(Feedback_Feedback.customer_rating))\
+                .filter(Feedback_Feedback.customer_uuid == f.uuid)\
+                .all()
+                
             # take avg to a decimal
             try:
-                itemscore = (avgrate[0][0])
-
+                itemscore = (getratings[0][0])
                 if itemscore is None:
                     itemscore = 0
             except:
                 itemscore = 0
-
+                
+            # set score
+            userstats.user_rating = Decimal(itemscore)
+            
             # add user stats to db
-            userstats.userrating = Decimal(itemscore)
             db.session.add(userstats)
-    db.session.commit()
+            change_order = True
+    if change_order is True:
+        db.session.commit()
+        print("Updated ")
+    else:
+        print("No work done")
+
 
 userrating()
