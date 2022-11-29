@@ -11,15 +11,14 @@ from app.classes.service import \
 from datetime import datetime, timedelta
 
 # run once a day
-olderthanfourmonths = datetime.utcnow() - (timedelta(weeks=3))
-
-
 
 def deletereturnsshipping():
     """
     #this will delete all returns after 4 weeks
     :return:
     """
+    olderthanfourmonths = datetime.utcnow() - (timedelta(weeks=3))
+
     updated_info = False
     
     getmsgs = db.session\
@@ -43,6 +42,8 @@ def deletesecretshipping():
     #this will delete all secret shipping addresses after 4 weeks
     :return:
     """
+    olderthanfourmonths = datetime.utcnow() - (timedelta(weeks=3))
+
     updated_info = False
     
     getmsgs = db.session\
@@ -66,6 +67,9 @@ def deleteoldmsgs():
     """
     updated_info = False
     
+    olderthanfourmonths = datetime.utcnow() - (timedelta(weeks=3))
+
+
     getmsgs = db.session\
         .query(Message_Post)\
         .filter(Message_Post.timestamp < olderthanfourmonths)\
@@ -87,6 +91,9 @@ def deleteoldmcomments():
     """
     updated_info = False
     
+    olderthanfourmonths = datetime.utcnow() - (timedelta(weeks=3))
+
+
     getmsgs = db.session\
         .query(Message_Comment)\
         .filter(Message_Comment.timestamp < olderthanfourmonths)\
@@ -108,6 +115,9 @@ def deleteoldfeedback():
     """
     updated_info = False
     
+    olderthanfourmonths = datetime.utcnow() - (timedelta(weeks=3))
+
+
     getmsgs = db.session\
         .query(Service_WebsiteFeedback)\
         .filter(Service_WebsiteFeedback.timestamp < olderthanfourmonths)\

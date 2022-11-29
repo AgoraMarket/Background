@@ -11,11 +11,14 @@ def main():
     :return:
     """
     change_order = False
+    
     two_days = datetime.utcnow() - (timedelta(days=2))
+    
     users = db.session\
         .query(User)\
         .filter(User.last_seen <= two_days, User.id != 1)\
         .all()
+        
     for user in users:
         change_order = True
         
@@ -53,6 +56,7 @@ def putonline():
     for item in markitem:
         item.online = 1
         db.session.add(item)
+        
     db.session.commit()
 
 main()

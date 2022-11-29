@@ -253,6 +253,7 @@ def requestcancel_24rs():
             change_order = True
 
     if change_order is True:
+        print("updated orders")
         db.session.commit()
 
 
