@@ -1,5 +1,5 @@
 from app import db
-from app.classes.wallet_bch import  Bch_Wallet
+from app.classes.wallet_bch import Bch_Wallet
 from decimal import Decimal
 
 

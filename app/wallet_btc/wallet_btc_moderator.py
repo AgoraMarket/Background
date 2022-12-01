@@ -2,7 +2,7 @@ from app import db
 from app.common.functions import floating_decimals
 from decimal import Decimal
 # models
-from app.classes.auth import Auth_User
+from app.classes.user import User
 from app.classes.user_orders import User_Orders
 # end models
 # btc imports
@@ -19,8 +19,8 @@ def finalize_order_dispute_btc(order_uuid, percent_to_customer, percent_to_vendo
         .filter(User_Orders.uuid == order_uuid)\
         .first()
     get_mod = db.session\
-        .query(Auth_User)\
-        .filter(Auth_User.id == get_order.moderator_uuid)\
+        .query(User)\
+        .filter(User.id == get_order.moderator_uuid)\
         .first()
     # get moderator fee
     mod_fee_percent = 0.05

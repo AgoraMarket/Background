@@ -3,7 +3,6 @@ from app.classes.item import Item_MarketItem
 from app.classes.user import User
 from datetime import datetime, timedelta
 
-
 # run every 12 hours
 def main():
     """
@@ -59,5 +58,3 @@ def putonline():
         
     db.session.commit()
 
-main()
-#putonline()

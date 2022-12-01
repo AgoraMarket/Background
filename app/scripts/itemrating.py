@@ -64,8 +64,3 @@ def marketitemrating():
 
 
 
-
-if __name__ == "__main__":
-    marketitemrating()
-
-

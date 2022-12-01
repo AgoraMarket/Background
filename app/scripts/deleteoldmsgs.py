@@ -133,10 +133,3 @@ def deleteoldfeedback():
         print("No work done")
 
 
-if __name__ == "__main__":
-    deleteoldmsgs()
-    deleteoldmcomments()
-    deletesecretshipping()
-    deleteoldfeedback()
-    deletereturnsshipping()
-   

@@ -375,11 +375,3 @@ def autofinalize_20days():
         print("No work done")
 
 
-if __name__ == "__main__":
-
-    requestcancel_24rs()
-    neworders_48hours()
-    acceptedorders_1week()
-    autofinalize_20days()
-
-

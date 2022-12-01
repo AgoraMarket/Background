@@ -11,8 +11,8 @@ flask-cors
 gunicorn
 python-dateutil
 python-dotenv
-marshmallow-sqlalchemy
 psycopg2-binary
 sqlalchemy
 qrcode[pil]
 qrcode
+marshmallow-sqlalchemy

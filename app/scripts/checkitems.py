@@ -81,5 +81,3 @@ def turnoffmarketitems():
         print("No work done")
 
 
-
-turnoffmarketitems()

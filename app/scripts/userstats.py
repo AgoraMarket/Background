@@ -47,5 +47,3 @@ def userrating():
     else:
         print("No work done")
 
-
-userrating()

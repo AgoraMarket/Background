@@ -1,20 +1,17 @@
 version: '3.8'
 
-volumes:
-  db:
-    driver: local
 
 networks:
   freeport:
     external: true
-
+services:
   api:
-    container_name: freeport-background
-    image: freeport/freeport-background
+    container_name: freeport-crons
+    image: freeport/freeport-crons
     restart: on-failure
     build:
         context: ./
-        dockerfile: Dockerfile
+        dockerfile: ./Dockerfile
     volumes:
         - ./:/app
     ports:

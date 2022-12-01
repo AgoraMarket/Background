@@ -60,7 +60,3 @@ def vendorrating():
             db.session.add(vendorstats)
     db.session.commit()
 
-vendorrating()
-
-
-

@@ -1,10 +1,9 @@
 from flask import jsonify
-from scripts import\
+from app.scripts import\
     checkitems,\
     deleteoldmsgs,\
     itemrating,\
     orders,\
-    sendmsg,\
     turnoffitems,\
     userstats,\
     vendorstats

@@ -1,12 +1,12 @@
 import os
 
-from app import UPLOADED_FILES_DEST_USER
 
 from app import db
 from decimal import Decimal
+from app import UPLOADED_FILES_DEST_USER
 
 # models
-from app.classes.auth import Auth_User
+from app.classes.user import User
 from app.classes.profile import\
 Profile_StatisticsUser,\
 Profile_StatisticsVendor
@@ -101,8 +101,8 @@ def userdata_different_trading_partners_user(user_id, otherid):
     # get customer txt and write vendor id
     ##
     user = db.session\
-        .query(Auth_User)\
-        .filter(user_id == Auth_User.id)\
+        .query(User)\
+        .filter(user_id == User.id)\
         .first()
 
     itemsbought = db.session\
@@ -145,8 +145,8 @@ def userdata_different_trading_partners_vendor(user_id, otherid):
     """
     # get the user
     user = db.session\
-        .query(Auth_User)\
-        .filter(user_id == Auth_User.id)\
+        .query(User)\
+        .filter(user_id == User.id)\
         .first()
     getuserlocation = userimagelocation(user_id=user.id)
     # get stats if vendor

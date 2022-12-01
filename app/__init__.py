@@ -5,15 +5,15 @@ from flask_session import Session
 from sqlalchemy.orm import sessionmaker
 from werkzeug.routing import BaseConverter
 import decimal
-
+from flask_login import LoginManager
 try:
     from instance.config import ApplicationConfig
 except Exception as e:
-    from common import ApplicationConfig
+    from local_settings import ApplicationConfig
     
     
 app = Flask(__name__)
-
+# configuration
 
 app.config.from_object(ApplicationConfig)
 
@@ -35,7 +35,15 @@ class DecimalEncoder(json.JSONEncoder):
             return float(o)
         return super(DecimalEncoder, self).default(o)
 
+UPLOADED_FILES_DEST_USER = ApplicationConfig.UPLOADED_FILES_DEST_USER
+UPLOADED_FILES_DEST_ITEM = ApplicationConfig.UPLOADED_FILES_DEST_ITEM
+UPLOADED_FILES_DEST = ApplicationConfig.UPLOADED_FILES_DEST
+UPLOADED_FILES_ALLOW = ApplicationConfig.UPLOADED_FILES_ALLOW
 
+app.config['UPLOADED_FILES_DEST_USER'] = ApplicationConfig.UPLOADED_FILES_DEST_USER
+app.config['UPLOADED_FILES_DEST_ITEM'] = ApplicationConfig.UPLOADED_FILES_DEST_ITEM
+app.config['UPLOADED_FILES_DEST'] = ApplicationConfig.UPLOADED_FILES_DEST
+app.config['UPLOADED_FILES_ALLOW'] = ApplicationConfig.UPLOADED_FILES_ALLOW
 app.url_map.converters['regex'] = RegexConverter
 app.json_encoder = DecimalEncoder
 
@@ -45,6 +53,10 @@ session.configure(bind=ApplicationConfig.SQLALCHEMY_DATABASE_URI_0)
 db = SQLAlchemy(app)
 server_session = Session(app)
 ma = Marshmallow(app)
+
+login_manager = LoginManager(app)
+login_manager.session_protection = 'strong'
+login_manager.anonymous_user = "Guest"
 
 
 
