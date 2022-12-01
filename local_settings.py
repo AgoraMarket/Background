@@ -14,7 +14,8 @@ class ApplicationConfig:
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    UPLOADED_FILES_DEST = '/mnt/clearnet'
-    UPLOADED_FILES_DEST_ITEM = '/mnt/clearnet/item'
-    UPLOADED_FILES_DEST_USER = '/mnt/clearnet/user'
- 
+    UPLOADED_FILES_DEST = '/data/items'
+    UPLOADED_FILES_DEST_ITEM = '/data/item'
+    UPLOADED_FILES_DEST_USER = '/data/user'
+    UPLOADED_FILES_ALLOW = ['png', 'jpeg', 'jpg', 'png', 'gif']
+
