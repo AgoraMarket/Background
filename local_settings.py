@@ -1,6 +1,4 @@
 # coding=utf-8
-
-#SQLALCHEMY_DATABASE_URI_0 = database_connection
 class ApplicationConfig:
     CURRENT_SETTINGS = 'LOCAL'
     # databases info

@@ -71,7 +71,7 @@ coverage.xml
 
 
 # Flask stuff:
-instance/
+
 .webassets-cache
 
 # Scrapy stuff:
@@ -112,6 +112,7 @@ ENV/
 
 app/auctions/
 app/templates/item/itemlisting/
-
+instance/config.py
+instance/cron.txt
 !/runTest.py
 /config.py
