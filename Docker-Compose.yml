@@ -15,6 +15,6 @@ services:
     volumes:
         - ./:/app
     ports:
-      - '6020:6020'
+      - '5055:5055'
     networks:
       - freeport
