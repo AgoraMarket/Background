@@ -47,7 +47,9 @@ def main():
 
 
 def putonline():
-    # put everything online
+    """
+    Puts EVERY item online.  Not a cron job currently
+    """
     markitem = db.session\
         .query(Item_MarketItem)\
         .filter(Item_MarketItem.vendor_id == 1)\
