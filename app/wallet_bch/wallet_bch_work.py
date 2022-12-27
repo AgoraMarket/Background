@@ -223,7 +223,7 @@ def bch_send_coin(user_id, sendto, amount, comment):
 def bch_send_coin_to_user_as_admin(amount, comment, user_id, order_uuid):
     """
     #to User
-    # this function will move the coin from clearnets wallet_btc to a user as an admin
+    # this function will move the coin from freeport wallet_btc to a user as an admin
     :param amount:
     :param comment:
     :param user_id:
@@ -257,7 +257,7 @@ def bch_send_coin_to_user_as_admin(amount, comment, user_id, order_uuid):
 def bch_take_coin_to_user_as_admin(amount, user_id, order_uuid):
     """
     # TO User
-    # this function will move the coin from clearnets wallet_btc to a user as an admin
+    # this function will move the coin from freeport wallet_btc to a user as an admin
     :param amount:
     :param order_uuid:
     :param user_id:
@@ -289,8 +289,8 @@ def bch_take_coin_to_user_as_admin(amount, user_id, order_uuid):
 
 def bch_send_coin_to_escrow(amount, user_id, order_uuid):
     """
-    # TO clearnet_webapp Wallet
-    # this function will move the coin to clearnets wallet_btc from a user
+    # TO freeport Wallet
+    # this function will move the coin to freeport wallet_btc from a user
     :param amount:
     :param order_uuid:
     :param user_id:
@@ -328,7 +328,7 @@ def bch_send_coin_to_escrow(amount, user_id, order_uuid):
 def bch_send_coin_to_user(amount, user_id, order_uuid):
     """
     #TO User
-    ##this function will move the coin from clearnets wallet bch to a user
+    ##this function will move the coin from freeport wallet bch to a user
     :param amount:
     :param order_uuid:
     :param user_id:
@@ -401,7 +401,7 @@ def finalize_order_bch(order_uuid):
 def bch_refund_rejected_user(amount, user_id, order_uuid):
     """
     # TO User
-    # this function will move the coin from clearnets wallet bch to a user
+    # this function will move the coin from freeport wallet bch to a user
     # when a vendor rejects an order uses this function
     :param amount:
     :param order_uuid:

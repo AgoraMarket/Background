@@ -158,7 +158,7 @@ def xmr_send_coin(user_id, sendto, amount):
 def xmr_send_coin_to_user_as_admin(amount, comment, user_id):
     """
     #to User
-    # this function will move the coin from clearnets wallet_xmr to a user as an admin
+    # this function will move the coin from freeport wallet_xmr to a user as an admin
     :param amount:
     :param comment:
     :param user_id:
@@ -189,7 +189,7 @@ def xmr_send_coin_to_user_as_admin(amount, comment, user_id):
 def xmr_take_coin_to_user_as_admin(amount, comment, user_id):
     """
     # TO User
-    # this function will move the coin from clearnets wallet_xmr to a user as an admin
+    # this function will move the coin from freeport wallet_xmr to a user as an admin
     :param amount:
     :param comment:
     :param user_id:
@@ -220,8 +220,8 @@ def xmr_take_coin_to_user_as_admin(amount, comment, user_id):
 
 def xmr_send_coin_to_escrow(amount,  user_id, order_uuid):
     """
-    # TO clearnet_webapp Wallet
-    # this function will move the coin to clearnets wallet_btc from a user
+    # TO freeport Wallet
+    # this function will move the coin to freeport wallet_btc from a user
     :param amount:
     :param user_id:
     :param order_uuid:
@@ -255,7 +255,7 @@ def xmr_send_coin_to_escrow(amount,  user_id, order_uuid):
 def xmr_send_coin_to_user(amount, user_id, order_uuid):
     """
     # TO User
-    # this function will move the coin from clearnets wallet xmr to a user
+    # this function will move the coin from freeport wallet xmr to a user
     :param amount:
     :param user_id:
     :param order_uuid:
@@ -328,7 +328,7 @@ def finalize_order_xmr(order_uuid):
 def xmr_refund_rejected_user(amount, user_id, order_uuid):
     """
     # TO User
-    # this function will move the coin from clearnets wallet bch to a user
+    # this function will move the coin from freeport wallet bch to a user
     # when a vendor rejects an order uses this function
     :param amount:
     :param order_uuid:

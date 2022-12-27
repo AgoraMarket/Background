@@ -124,7 +124,7 @@ def acceptedorders_1week():
     for f in acceptedorders:
 
         whenbought = f.created
-        nextday = (whenbought + timedelta(days=7))
+        nextday = (whenbought + timedelta(days=5))
 
         if datetime.utcnow() > nextday:
             # Order was accepted but not shipped. Give back to customer
