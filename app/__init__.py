@@ -37,12 +37,10 @@ class DecimalEncoder(json.JSONEncoder):
 
 UPLOADED_FILES_DEST_USER = ApplicationConfig.UPLOADED_FILES_DEST_USER
 UPLOADED_FILES_DEST_ITEM = ApplicationConfig.UPLOADED_FILES_DEST_ITEM
-UPLOADED_FILES_DEST = ApplicationConfig.UPLOADED_FILES_DEST
 UPLOADED_FILES_ALLOW = ApplicationConfig.UPLOADED_FILES_ALLOW
 
 app.config['UPLOADED_FILES_DEST_USER'] = ApplicationConfig.UPLOADED_FILES_DEST_USER
 app.config['UPLOADED_FILES_DEST_ITEM'] = ApplicationConfig.UPLOADED_FILES_DEST_ITEM
-app.config['UPLOADED_FILES_DEST'] = ApplicationConfig.UPLOADED_FILES_DEST
 app.config['UPLOADED_FILES_ALLOW'] = ApplicationConfig.UPLOADED_FILES_ALLOW
 app.url_map.converters['regex'] = RegexConverter
 app.json_encoder = DecimalEncoder
