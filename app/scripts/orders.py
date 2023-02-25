@@ -122,73 +122,73 @@ def acceptedorders_1week():
         .all()
 
     for f in acceptedorders:
+        if f.extended_timer == 0:
+            whenbought = f.created
+            nextday = (whenbought + timedelta(days=5))
 
-        whenbought = f.created
-        nextday = (whenbought + timedelta(days=5))
+            if datetime.utcnow() > nextday:
+                # Order was accepted but not shipped. Give back to customer
 
-        if datetime.utcnow() > nextday:
-            # Order was accepted but not shipped. Give back to customer
+                if f.digital_currency == 1:
+                    btc_send_coin_to_user(amount=f.price_total_btc,
+                                        user_id=f.customer_id,
+                                        order_uuid=f.uuid
+                                        )
+                    
+                    notification(type=6,
+                                username=f.customer_user_name,
+                                user_id=f.customer_id,
+                                salenumber=f.uuid,
+                                bitcoin=f.price_total_btc)
 
-            if f.digital_currency == 1:
-                btc_send_coin_to_user(amount=f.price_total_btc,
-                                      user_id=f.customer_id,
-                                      order_uuid=f.uuid
-                                      )
-                
-                notification(type=6,
-                            username=f.customer_user_name,
-                            user_id=f.customer_id,
-                            salenumber=f.uuid,
-                            bitcoin=f.price_total_btc)
+                    # notify vendor
+                    notification(type=6,
+                                username=f.vendor_user_name,
+                                user_id=f.vendor_id,
+                                salenumber=f.uuid,
+                                bitcoin=f.price_total_btc)
 
-                # notify vendor
-                notification(type=6,
-                            username=f.vendor_user_name,
-                            user_id=f.vendor_id,
-                            salenumber=f.uuid,
-                            bitcoin=f.price_total_btc)
+                elif f.digital_currency == 2:
+                    bch_send_coin_to_user(amount=f.price_total_bch,
+                                        user_id=f.customer_id,
+                                        order_uuid=f.uuid
+                                        )
+                    notification(type=6,
+                                username=f.customer_user_name,
+                                user_id=f.customer_id,
+                                salenumber=f.uuid,
+                                bitcoin=f.price_total_bch)
 
-            elif f.digital_currency == 2:
-                bch_send_coin_to_user(amount=f.price_total_bch,
-                                      user_id=f.customer_id,
-                                      order_uuid=f.uuid
-                                      )
-                notification(type=6,
-                            username=f.customer_user_name,
-                            user_id=f.customer_id,
-                            salenumber=f.uuid,
-                            bitcoin=f.price_total_bch)
+                    # notify vendor
+                    notification(type=6,
+                                username=f.vendor_user_name,
+                                user_id=f.vendor_id,
+                                salenumber=f.uuid,
+                                bitcoin=f.price_total_bch)
 
-                # notify vendor
-                notification(type=6,
-                            username=f.vendor_user_name,
-                            user_id=f.vendor_id,
-                            salenumber=f.uuid,
-                            bitcoin=f.price_total_bch)
+                elif f.digital_currency == 3:
+                    xmr_send_coin_to_user(amount=f.price_total_xmr,
+                                        user_id=f.customer_id,
+                                        order_uuid=f.uuid
+                                        )
+                    notification(type=6,
+                                username=f.customer_user_name,
+                                user_id=f.customer_id,
+                                salenumber=f.uuid,
+                                bitcoin=f.price_total_xmr
+                                )
 
-            elif f.digital_currency == 3:
-                xmr_send_coin_to_user(amount=f.price_total_xmr,
-                                      user_id=f.customer_id,
-                                      order_uuid=f.uuid
-                                      )
-                notification(type=6,
-                            username=f.customer_user_name,
-                            user_id=f.customer_id,
-                            salenumber=f.uuid,
-                            bitcoin=f.price_total_xmr
-                             )
+                    # notify vendor
+                    notification(type=6,
+                                username=f.vendor_user_name,
+                                user_id=f.vendor_id,
+                                salenumber=f.uuid,
+                                bitcoin=f.price_total_xmr
+                                )
+            
+                f.overall_status = 6
 
-                # notify vendor
-                notification(type=6,
-                            username=f.vendor_user_name,
-                            user_id=f.vendor_id,
-                            salenumber=f.uuid,
-                            bitcoin=f.price_total_xmr
-                            )
-        
-            f.overall_status = 6
-
-            change_order = True
+                change_order = True
 
     if change_order is True:
         db.session.commit()
@@ -277,96 +277,97 @@ def autofinalize_20days():
         twentydaysfromorder = (whenbought + timedelta(days=20))
 
         if datetime.utcnow() > twentydaysfromorder:
+            if f.extended_timer == 0:
 
-            # BTC
-            if f.digital_currency == 1:
-                # finalize order
-                finalize_order_bch(f.uuid)
-                
-                # notify vendor
-                notification(type=6,
-                             username=f.vendor_user_name,
-                             user_id=f.vendor_id,
-                             salenumber=f.uuid,
-                             bitcoin=f.price_total_btc)
-                
-                # calculate amount for stats
-                total_made_sale = f.price_total_bch - f.shipping_price_btc
-                
-                # Bch Spent by user
-                userdata_total_spent_on_item_btc(user_id=f.customer_uuid,
-                                                howmany=f.quantity,
+                # BTC
+                if f.digital_currency == 1:
+                    # finalize order
+                    finalize_order_bch(f.uuid)
+                    
+                    # notify vendor
+                    notification(type=6,
+                                username=f.vendor_user_name,
+                                user_id=f.vendor_id,
+                                salenumber=f.uuid,
+                                bitcoin=f.price_total_btc)
+                    
+                    # calculate amount for stats
+                    total_made_sale = f.price_total_bch - f.shipping_price_btc
+                    
+                    # Bch Spent by user
+                    userdata_total_spent_on_item_btc(user_id=f.customer_uuid,
+                                                    howmany=f.quantity,
+                                                    amount=f.total_made_sale)
+
+                    # Bch recieved by vendor
+                    userdata_total_made_on_item_btc(user_id=f.vendor_uuid,
+                                                    amount=f.total_made_sale)
+                # BTC Cash
+                elif f.digital_currency == 2:
+                    # finalize order
+                    finalize_order_btc(f.uuid)
+                    
+                    # notify vendor
+                    notification(type=6,
+                                username=f.vendor_user_name,
+                                user_id=f.vendor_id,
+                                salenumber=f.uuid,
+                                bitcoin=f.price_total_bch)
+                    
+                    # calculate amount for stats
+                    total_made_sale = f.price_total_bch - f.shipping_price_btc
+                    
+                    # Bch Spent by user
+                    userdata_total_spent_on_item_bch(user_id=f.customer_uuid,
+                                                    howmany=f.quantity,
+                                                    amount=f.total_made_sale)
+
+                    # Bch recieved by vendor
+                    userdata_total_made_on_item_bch(user_id=f.vendor_uuid,
                                                 amount=f.total_made_sale)
+                # XMR
+                elif f.digital_currency == 3:
+                    
+                    # finalize order
+                    finalize_order_xmr(f.uuid)
+                    
+                    # notify vendor
+                    notification(type=6,
+                                username=f.vendor_user_name,
+                                user_id=f.vendor_id,
+                                salenumber=f.uuid,
+                                bitcoin=f.price_total_xmr)
+                    
+                    # calculate amount for stats
+                    total_made_sale = f.price_total_bch - f.shipping_price_btc
+                    
+                    # xmr Spent by user
+                    userdata_total_spent_on_item_xmr(user_id=f.customer_uuid,
+                                                    howmany=f.quantity,
+                                                    amount=total_made_sale)
 
-                # Bch recieved by vendor
-                userdata_total_made_on_item_btc(user_id=f.vendor_uuid,
-                                                 amount=f.total_made_sale)
-            # BTC Cash
-            elif f.digital_currency == 2:
-                # finalize order
-                finalize_order_btc(f.uuid)
-                
-                # notify vendor
-                notification(type=6,
-                             username=f.vendor_user_name,
-                             user_id=f.vendor_id,
-                             salenumber=f.uuid,
-                             bitcoin=f.price_total_bch)
-                
-                # calculate amount for stats
-                total_made_sale = f.price_total_bch - f.shipping_price_btc
-                
-                # Bch Spent by user
-                userdata_total_spent_on_item_bch(user_id=f.customer_uuid,
-                                                howmany=f.quantity,
-                                                amount=f.total_made_sale)
+                    # xmr recieved by vendor
+                    userdata_total_made_on_item_xmr(user_id=f.vendor_uuid,
+                                                    amount=total_made_sale)
 
-                # Bch recieved by vendor
-                userdata_total_made_on_item_bch(user_id=f.vendor_uuid,
-                                            amount=f.total_made_sale)
-            # XMR
-            elif f.digital_currency == 3:
-                
-                # finalize order
-                finalize_order_xmr(f.uuid)
-                
-                # notify vendor
-                notification(type=6,
-                             username=f.vendor_user_name,
-                             user_id=f.vendor_id,
-                             salenumber=f.uuid,
-                             bitcoin=f.price_total_xmr)
-                
-                # calculate amount for stats
-                total_made_sale = f.price_total_bch - f.shipping_price_btc
-                
-                # xmr Spent by user
-                userdata_total_spent_on_item_xmr(user_id=f.customer_uuid,
-                                                howmany=f.quantity,
-                                                amount=total_made_sale)
-
-                # xmr recieved by vendor
-                userdata_total_made_on_item_xmr(user_id=f.vendor_uuid,
-                                                amount=total_made_sale)
-
-            else:
-                break
+                else:
+                    break
 
 
-            # add stats
-            # Add total items bought
-            userdata_add_total_items_bought(user_id=f.customer_uuid,
+                # add stats
+                # Add total items bought
+                userdata_add_total_items_bought(user_id=f.customer_uuid,
+                                                howmany=f.quantity)
+
+                # add total sold to vendor
+                userdata_add_total_items_sold(user_id=f.vendor_uuid,
                                             howmany=f.quantity)
 
-            # add total sold to vendor
-            userdata_add_total_items_sold(user_id=f.vendor_uuid,
-                                          howmany=f.quantity)
+        
 
-       
+                f.overall_status = 10
 
-            f.overall_status = 10
-
-            change_order = True
+                change_order = True
 
     if change_order is True:
         db.session.commit()
