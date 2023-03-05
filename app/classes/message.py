@@ -3,21 +3,18 @@ from app import db, ma
 from datetime import datetime
 
 
-class Message_Notifications(db.Model):
-    __tablename__ = 'message_notifications'
+class Notification_Notifications(db.Model):
+    __tablename__ = 'Notification_Notifications'
     __bind_key__ = 'clearnet'
     __table_args__ = {"schema": "public"}
     id = db.Column(db.Integer,
                    primary_key=True,
                    autoincrement=True)
-    type = db.Column(db.INTEGER)
+    type_of_notification = db.Column(db.INTEGER)
     username = db.Column(db.VARCHAR(40))
-    user_id = db.Column(db.INTEGER)
+    user_uuid = db.Column(db.VARCHAR(40))
     timestamp = db.Column(db.TIMESTAMP())
-    salenumber = db.Column(db.INTEGER)
-    bitcoin = db.Column(db.DECIMAL(20, 8))
-    bitcoincash = db.Column(db.DECIMAL(20, 8))
-    monero = db.Column(db.DECIMAL(20, 12))
+    message = db.Column(db.VARCHAR(400))
     read = db.Column(db.INTEGER)
 
 

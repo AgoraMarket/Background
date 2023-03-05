@@ -1,6 +1,6 @@
 from datetime import datetime
 from app import db
-from app.classes.message import Message_Notifications
+from app.classes.message import Notification_Notifications
 
 #1 = sale
 #2 = message
@@ -30,7 +30,7 @@ from app.classes.message import Message_Notifications
 
 def notification(type, username, user_id, salenumber, bitcoin):
     now = datetime.utcnow()
-    addnotice = Message_Notifications(
+    addnotice = Notification_Notifications(
                             type=type,
                             timestamp=now,
                             username=username,
