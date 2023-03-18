@@ -18,7 +18,7 @@ def get_daemon_status():
     """
 
     return jsonify({
-        "status": 'Ready to do background work',
+        "success": 'Ready to do background work',
     })
 
 @app.route('/orders', methods=['GET'])
@@ -32,9 +32,7 @@ def check_orders():
     orders.requestcancel_24rs()
     orders.autofinalize_20days()
     
-    return jsonify({
-        "status": 'Checking Orders',
-    })
+    return jsonify({ "success": 'Checking Orders' })
 
 @app.route('/deletemsgs', methods=['GET'])
 def check_old_msgs():
@@ -48,9 +46,7 @@ def check_old_msgs():
     deleteoldmsgs.deletesecretshipping()
     deleteoldmsgs.deletereturnsshipping()
     
-    return jsonify({
-        "status": 'Checked old msgs',
-    })
+    return jsonify({ "success": 'Checked old msgs' })
     
     
 @app.route('/checkitems', methods=['GET'])
@@ -61,9 +57,7 @@ def check_items():
     """
     checkitems.turnoffmarketitems()
     
-    return jsonify({
-        "status": 'Checked Items',
-    })
+    return jsonify({ "success": 'Checked Items' })
     
 @app.route('/checkrating', methods=['GET'])
 def check_item_rating():
@@ -73,9 +67,7 @@ def check_item_rating():
     """
     itemrating.marketitemrating()
     
-    return jsonify({
-        "status": 'Checked item rating',
-    })
+    return jsonify({ "success": 'Checked item rating' })
     
     
     
@@ -87,9 +79,7 @@ def check_user_stats():
     """
     userstats.userrating()
     
-    return jsonify({
-        "status": 'Checked user stats',
-    })
+    return jsonify({"success": 'Checked user stats' })
     
 @app.route('/checkvendorstats', methods=['GET'])
 def check_vendor_stats():
@@ -99,9 +89,7 @@ def check_vendor_stats():
     """
     vendorstats.vendorrating()
     
-    return jsonify({
-        "status": 'Checked vendor stats',
-    })
+    return jsonify({  "success": 'Checked vendor stats' })
     
 @app.route('/checkvendoraway', methods=['GET'])
 def check_vendor_away():
@@ -112,7 +100,5 @@ def check_vendor_away():
     """
     turnoffitems.main()
     
-    return jsonify({
-        "status": 'Checked vendor online status',
-    })
+    return jsonify({"success": 'Checked vendor online status' })
     

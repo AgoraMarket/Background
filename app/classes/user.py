@@ -2,7 +2,7 @@ from app import db
 from datetime import datetime
 
 
-class User(db.Model):
+class Auth_User(db.Model):
     __tablename__ = 'auth_users'
     __bind_key__ = 'clearnet'
     __table_args__ = {"schema": "public"}
@@ -20,6 +20,7 @@ class User(db.Model):
     email = db.Column(db.VARCHAR(350))
     wallet_pin = db.Column(db.VARCHAR(5))
     profileimage = db.Column(db.VARCHAR(100))
+    profileimage_url_250 = db.Column(db.VARCHAR(3000))
     bio = db.Column(db.TEXT)
     country = db.Column(db.INTEGER)
     currency = db.Column(db.INTEGER)
@@ -65,6 +66,7 @@ class User(db.Model):
                  usernode,
                  confirmed,
                  passwordpinallowed,
+                 profileimage_url_250
                  ):
         self.username = username
         self.password_hash = password_hash
@@ -90,7 +92,7 @@ class User(db.Model):
         self.lasttraded_timer = lasttraded_timer
         self.shard = shard
         self.usernode = usernode
-
+        self.profileimage_url_250 = profileimage_url_250
         self.confirmed = confirmed
         self.passwordpinallowed = passwordpinallowed
 

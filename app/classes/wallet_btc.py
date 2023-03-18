@@ -163,6 +163,7 @@ class Btc_TransactionsBtc_Schema(ma.SQLAlchemyAutoSchema):
     fee = ma.auto_field()
     created = ma.auto_field()
     balance = ma.auto_field()
+
     confirmed = ma.auto_field()
     confirmed_fee = ma.auto_field()
     digital_currency = ma.auto_field()

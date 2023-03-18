@@ -1,7 +1,7 @@
 from app import db
 from decimal import Decimal
 from sqlalchemy import func
-from app.classes.user import User
+from app.classes.user import Auth_User
 from app.classes.feedback import Feedback_Feedback
 from app.classes.profile import Profile_StatisticsVendor
 
@@ -18,8 +18,8 @@ def vendorrating():
     """
 
     user = db.session\
-        .query(User)\
-        .filter(User.vendor_account == 1)\
+        .query(Auth_User)\
+        .filter(Auth_User.vendor_account == 1)\
         .all()
     for f in user:
         # get vendor stats of user-
@@ -58,5 +58,6 @@ def vendorrating():
             vendorstats.avg_item_rating = Decimal(itemscore)
 
             db.session.add(vendorstats)
+
     db.session.commit()
 

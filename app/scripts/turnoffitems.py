@@ -1,8 +1,8 @@
 from app import db
 from app.classes.item import Item_MarketItem
-from app.classes.user import User
+from app.classes.user import Auth_User
 from datetime import datetime, timedelta
-
+from app.notification import notification
 # run every 12 hours
 def main():
     """
@@ -14,8 +14,8 @@ def main():
     two_days = datetime.utcnow() - (timedelta(days=2))
     
     users = db.session\
-        .query(User)\
-        .filter(User.last_seen <= two_days, User.id != 1)\
+        .query(Auth_User)\
+        .filter(Auth_User.last_seen <= two_days, Auth_User.id != 1)\
         .all()
         
     for user in users:
@@ -37,7 +37,14 @@ def main():
         for item in markitem:
             item.online = 0
             db.session.add(item)
-           
+            # notify customer
+
+        # notify vendor
+        notification(
+            username=user.user_name,
+            user_uuid=user.uuid,
+            msg='You have not logged in in 2 days.  All items have been turned off.'
+        )
             
     if change_order is True:
         db.session.commit()

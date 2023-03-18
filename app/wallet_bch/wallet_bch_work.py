@@ -8,7 +8,7 @@ import datetime
 import os
 import qrcode
 # models
-from app.classes.user import User
+from app.classes.user import Auth_User
 from app.classes.auth import Auth_UserFees
 
 from app.classes.wallet_bch import \
@@ -114,7 +114,7 @@ def bch_create_qr_code(user_id, address):
     # find path of the user
     getuserlocation = userimagelocation(user_id=user_id)
     get_user = db.session\
-        .query(User)\
+        .query(Auth_User)\
         .get(user_id)
     thepath = os.path.join(UPLOADED_FILES_DEST_USER,
                            getuserlocation, str(get_user.uuid))
@@ -143,8 +143,8 @@ def bch_walletstatus(user_id):
         .filter_by(Bch_Wallet.user_id == user_id)\
         .first()
     getuser = db.session\
-        .query(User)\
-        .filter(User.id == user_id)\
+        .query(Auth_User)\
+        .filter(Auth_User.id == user_id)\
         .first()
     if userswallet:
         try:

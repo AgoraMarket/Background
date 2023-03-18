@@ -5,23 +5,15 @@ from flask_session import Session
 from sqlalchemy.orm import sessionmaker
 from werkzeug.routing import BaseConverter
 import decimal
-from flask_login import LoginManager
-try:
-    from instance.config import ApplicationConfig
-except Exception as e:
-    from local_settings import ApplicationConfig
-    
-    
+from config import load_config
+
+ApplicationConfig = load_config()
+
+
+
 app = Flask(__name__)
-# configuration
-
 app.config.from_object(ApplicationConfig)
-
 session = sessionmaker()
-
-check_enviroment = ApplicationConfig.CURRENT_SETTINGS
-print(f"starting server with {check_enviroment} settings")
-
 
 class RegexConverter(BaseConverter):
     def __init__(self, url_map, *items):
@@ -52,9 +44,6 @@ db = SQLAlchemy(app)
 server_session = Session(app)
 ma = Marshmallow(app)
 
-login_manager = LoginManager(app)
-login_manager.session_protection = 'strong'
-login_manager.anonymous_user = "Guest"
 
 
 

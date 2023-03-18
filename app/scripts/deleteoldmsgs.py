@@ -1,8 +1,7 @@
 from app import db
 
 from app.classes.message import \
-    Message_Post,\
-    Message_Comment
+    Message_Post, Message_Chat
 from app.classes.service import \
     Service_ShippingSecret,\
     Service_ReturnsTracking,\
@@ -95,8 +94,8 @@ def deleteoldmcomments():
 
 
     getmsgs = db.session\
-        .query(Message_Comment)\
-        .filter(Message_Comment.timestamp < olderthanfourmonths)\
+        .query(Message_Chat)\
+        .filter(Message_Chat.timestamp < olderthanfourmonths)\
         .all()
     for f in getmsgs:
         db.session.delete(f)

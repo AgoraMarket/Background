@@ -4,7 +4,7 @@ from decimal import\
 from app.common.functions import\
     floating_decimals
 
-from app.classes.user import User
+from app.classes.user import Auth_User
 from app.classes.user_orders import\
     User_Orders
 from app.wallet_xmr.wallet_xmr_work import \

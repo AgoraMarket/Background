@@ -3,51 +3,14 @@ from app import db, ma
 from datetime import datetime
 
 
-class Notification_Notifications(db.Model):
-    __tablename__ = 'Notification_Notifications'
-    __bind_key__ = 'clearnet'
-    __table_args__ = {"schema": "public"}
-    id = db.Column(db.Integer,
-                   primary_key=True,
-                   autoincrement=True)
-    type_of_notification = db.Column(db.INTEGER)
-    username = db.Column(db.VARCHAR(40))
-    user_uuid = db.Column(db.VARCHAR(40))
-    timestamp = db.Column(db.TIMESTAMP())
-    message = db.Column(db.VARCHAR(400))
-    read = db.Column(db.INTEGER)
-
-
-class Message_Comment(db.Model):
-    __tablename__ = 'message_comment'
-    __bind_key__ = 'clearnet'
-    __table_args__ = {"schema": "public"}
-    id = db.Column(db.Integer, primary_key=True)
-    body = db.Column(db.Text)
-    timestamp = db.Column(db.TIMESTAMP(),
-                          index=True,
-                          default=datetime.utcnow())
-    user_one_uuid = db.Column(db.VARCHAR(40))
-    user_one = db.Column(db.VARCHAR(140))
-    post_id = db.Column(db.Integer)
-    mod_name = db.Column(db.VARCHAR(140))
-    mod_uuid = db.Column(db.VARCHAR(40))
-
-
-class Message_Comment_Schema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = Message_Comment
-
-
-comment_schema = Message_Comment_Schema()
-comments_schema = Message_Comment_Schema(many=True)
-
-
 class Message_Post(db.Model):
     __tablename__ = 'message_post'
     __bind_key__ = 'clearnet'
     __table_args__ = {"schema": "public"}
     id = db.Column(db.Integer, primary_key=True)
+    user_one_uuid = db.Column(db.VARCHAR(40))
+    user_two_uuid = db.Column(db.VARCHAR(40))
+    mod_uuid = db.Column(db.VARCHAR(40))
     timestamp = db.Column(db.TIMESTAMP(),
                           index=True,
                           default=datetime.utcnow())
@@ -73,12 +36,12 @@ class Message_Chat(db.Model):
     admin = db.Column(db.INTEGER)
     post_id = db.Column(db.Integer)
     read = db.Column(db.Integer)
+    who_commented = db.Column(db.Integer)
 
 
 class Message_Chat_Schema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Message_Chat
-
 
 msg_schema = Message_Chat_Schema()
 msgs_schema = Message_Chat_Schema(many=True)

@@ -1,7 +1,7 @@
 from app import db
 from app.classes.item import Item_MarketItem
 from decimal import Decimal
-
+from app.notification import notification
 
 def turnoffmarketitems():
     change_order = False
@@ -69,15 +69,18 @@ def turnoffmarketitems():
                         specific_item.shipping_three = False
                         db.session.add(specific_item)
                         change_order = True
+
         except Exception as e:
             print(str(e))
             continue
             
 
     if change_order is True:
+        notification(username=specific_item.vendor_name,
+                     user_uuid=specific_item.vendor_uuid,
+                     msg="Your item has been disabled due to incorrect fields")
         db.session.commit()
         print("Updated ")
-    else:
-        print("No work done")
+
 
 

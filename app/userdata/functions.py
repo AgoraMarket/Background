@@ -1,12 +1,10 @@
 import os
-
-
 from app import db
 from decimal import Decimal
 from app import UPLOADED_FILES_DEST_USER
 
 # models
-from app.classes.user import User
+from app.classes.user import Auth_User
 from app.classes.profile import\
 Profile_StatisticsUser,\
 Profile_StatisticsVendor
@@ -18,10 +16,6 @@ userimagelocation,\
 convert_to_local_bch,\
 convert_to_local_btc,\
 convert_to_local_xmr
-
-
-
-
 
 def userdata_add_total_items_sold(user_id, howmany):
     """
@@ -101,8 +95,8 @@ def userdata_different_trading_partners_user(user_id, otherid):
     # get customer txt and write vendor id
     ##
     user = db.session\
-        .query(User)\
-        .filter(user_id == User.id)\
+        .query(Auth_User)\
+        .filter(user_id == Auth_User.id)\
         .first()
 
     itemsbought = db.session\

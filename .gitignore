@@ -116,3 +116,4 @@ instance/config.py
 instance/cron.txt
 !/runTest.py
 /config.py
+settings_production.py

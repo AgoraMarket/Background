@@ -88,18 +88,18 @@ def neworders_48hours():
 
 
             # notify customer
-            notification(type=6,
+            notification(
                          username=f.customer_user_name,
-                         user_id=f.customer_id,
-                         salenumber=f.uuid,
-                         bitcoin=f.totalprice)
+                         user_uuid=f.customer_id,
+                         msg='Order was not accepted by vendor in time.  Cancelled and coin returned'
+            )
 
             # notify vendor
-            notification(type=6,
-                         username=f.vendor_user_name,
-                         user_id=f.vendor_id,
-                         salenumber=f.uuid,
-                         bitcoin=f.totalprice)
+            notification(
+                         username=f.customer_user_name,
+                         user_uuid=f.customer_id,
+                         msg='Order was not accepted.  Cancelled and coin returned to customer.'
+            )
 
             f.overall_status = 6
 
@@ -134,60 +134,33 @@ def acceptedorders_1week():
                                         user_id=f.customer_id,
                                         order_uuid=f.uuid
                                         )
-                    
-                    notification(type=6,
-                                username=f.customer_user_name,
-                                user_id=f.customer_id,
-                                salenumber=f.uuid,
-                                bitcoin=f.price_total_btc)
-
-                    # notify vendor
-                    notification(type=6,
-                                username=f.vendor_user_name,
-                                user_id=f.vendor_id,
-                                salenumber=f.uuid,
-                                bitcoin=f.price_total_btc)
 
                 elif f.digital_currency == 2:
                     bch_send_coin_to_user(amount=f.price_total_bch,
                                         user_id=f.customer_id,
                                         order_uuid=f.uuid
                                         )
-                    notification(type=6,
-                                username=f.customer_user_name,
-                                user_id=f.customer_id,
-                                salenumber=f.uuid,
-                                bitcoin=f.price_total_bch)
-
-                    # notify vendor
-                    notification(type=6,
-                                username=f.vendor_user_name,
-                                user_id=f.vendor_id,
-                                salenumber=f.uuid,
-                                bitcoin=f.price_total_bch)
 
                 elif f.digital_currency == 3:
                     xmr_send_coin_to_user(amount=f.price_total_xmr,
                                         user_id=f.customer_id,
                                         order_uuid=f.uuid
                                         )
-                    notification(type=6,
-                                username=f.customer_user_name,
-                                user_id=f.customer_id,
-                                salenumber=f.uuid,
-                                bitcoin=f.price_total_xmr
-                                )
 
-                    # notify vendor
-                    notification(type=6,
-                                username=f.vendor_user_name,
-                                user_id=f.vendor_id,
-                                salenumber=f.uuid,
-                                bitcoin=f.price_total_xmr
-                                )
             
                 f.overall_status = 6
-
+                # notify customer
+                notification(
+                    username=f.customer_user_name,
+                    user_uuid=f.customer_id,
+                    msg='Order was not shipped in time.  Cancelled and coin returned to customer.'
+                )
+                # notify vendor
+                notification(
+                    username=f.customer_user_name,
+                    user_uuid=f.customer_id,
+                    msg='Order was not shipped in time.  Cancelled and coin returned to customer.'
+                )
                 change_order = True
 
     if change_order is True:
@@ -234,22 +207,19 @@ def requestcancel_24rs():
                                       order_uuid=f.uuid
                                       )
 
-            # notify customer
-            notification(type=6,
-                         username=f.customer_user_name,
-                         user_id=f.customer_id,
-                         salenumber=f.uuid,
-                         bitcoin=f.totalprice)
-
-            # notify vendor
-            notification(type=6,
-                         username=f.vendor_user_name,
-                         user_id=f.vendor_id,
-                         salenumber=f.uuid,
-                         bitcoin=f.totalprice)
-
             f.overall_status = 6
-
+            # notify customer
+            notification(
+                username=f.customer_user_name,
+                user_uuid=f.customer_id,
+                msg='Order was not cancelled in time.  Cancelled and coin returned to customer.'
+            )
+            # notify vendor
+            notification(
+                username=f.customer_user_name,
+                user_uuid=f.customer_id,
+                msg='Order was not cancelled in time.  Cancelled and coin returned to customer.'
+            )
             change_order = True
 
     if change_order is True:
@@ -259,7 +229,7 @@ def requestcancel_24rs():
 
 def autofinalize_20days():
     """
-    #this function gives the money to the vendor after 30 days if no issues
+    #this function gives the money to the vendor after 20 days if no issues
     :return:
     """
     # get the current fee
@@ -283,14 +253,7 @@ def autofinalize_20days():
                 if f.digital_currency == 1:
                     # finalize order
                     finalize_order_bch(f.uuid)
-                    
-                    # notify vendor
-                    notification(type=6,
-                                username=f.vendor_user_name,
-                                user_id=f.vendor_id,
-                                salenumber=f.uuid,
-                                bitcoin=f.price_total_btc)
-                    
+
                     # calculate amount for stats
                     total_made_sale = f.price_total_bch - f.shipping_price_btc
                     
@@ -306,14 +269,7 @@ def autofinalize_20days():
                 elif f.digital_currency == 2:
                     # finalize order
                     finalize_order_btc(f.uuid)
-                    
-                    # notify vendor
-                    notification(type=6,
-                                username=f.vendor_user_name,
-                                user_id=f.vendor_id,
-                                salenumber=f.uuid,
-                                bitcoin=f.price_total_bch)
-                    
+
                     # calculate amount for stats
                     total_made_sale = f.price_total_bch - f.shipping_price_btc
                     
@@ -330,13 +286,7 @@ def autofinalize_20days():
                     
                     # finalize order
                     finalize_order_xmr(f.uuid)
-                    
-                    # notify vendor
-                    notification(type=6,
-                                username=f.vendor_user_name,
-                                user_id=f.vendor_id,
-                                salenumber=f.uuid,
-                                bitcoin=f.price_total_xmr)
+
                     
                     # calculate amount for stats
                     total_made_sale = f.price_total_bch - f.shipping_price_btc
@@ -353,7 +303,18 @@ def autofinalize_20days():
                 else:
                     break
 
-
+                # notify customer
+                notification(
+                    username=f.customer_user_name,
+                    user_uuid=f.customer_id,
+                    msg='Order has autofinalized. '
+                )
+                # notify vendor
+                notification(
+                    username=f.customer_user_name,
+                    user_uuid=f.customer_id,
+                    msg='Order has autofinalized.'
+                )
                 # add stats
                 # Add total items bought
                 userdata_add_total_items_bought(user_id=f.customer_uuid,
