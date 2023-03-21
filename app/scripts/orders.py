@@ -8,7 +8,7 @@ from sqlalchemy import or_
 from app.classes.user_orders import User_Orders
 
 # End Models
-from app.notification import notification
+from app.common.notification import create_notification
 
 from app.userdata.functions import \
     userdata_add_total_items_bought, \
@@ -88,14 +88,14 @@ def neworders_48hours():
 
 
             # notify customer
-            notification(
+            create_notification(
                          username=f.customer_user_name,
                          user_uuid=f.customer_id,
                          msg='Order was not accepted by vendor in time.  Cancelled and coin returned'
             )
 
             # notify vendor
-            notification(
+            create_notification(
                          username=f.customer_user_name,
                          user_uuid=f.customer_id,
                          msg='Order was not accepted.  Cancelled and coin returned to customer.'
@@ -150,13 +150,13 @@ def acceptedorders_1week():
             
                 f.overall_status = 6
                 # notify customer
-                notification(
+                create_notification(
                     username=f.customer_user_name,
                     user_uuid=f.customer_id,
                     msg='Order was not shipped in time.  Cancelled and coin returned to customer.'
                 )
                 # notify vendor
-                notification(
+                create_notification(
                     username=f.customer_user_name,
                     user_uuid=f.customer_id,
                     msg='Order was not shipped in time.  Cancelled and coin returned to customer.'
@@ -209,13 +209,13 @@ def requestcancel_24rs():
 
             f.overall_status = 6
             # notify customer
-            notification(
+            create_notification(
                 username=f.customer_user_name,
                 user_uuid=f.customer_id,
                 msg='Order was not cancelled in time.  Cancelled and coin returned to customer.'
             )
             # notify vendor
-            notification(
+            create_notification(
                 username=f.customer_user_name,
                 user_uuid=f.customer_id,
                 msg='Order was not cancelled in time.  Cancelled and coin returned to customer.'
@@ -304,13 +304,13 @@ def autofinalize_20days():
                     break
 
                 # notify customer
-                notification(
+                create_notification(
                     username=f.customer_user_name,
                     user_uuid=f.customer_id,
                     msg='Order has autofinalized. '
                 )
                 # notify vendor
-                notification(
+                create_notification(
                     username=f.customer_user_name,
                     user_uuid=f.customer_id,
                     msg='Order has autofinalized.'

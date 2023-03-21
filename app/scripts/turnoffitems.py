@@ -2,7 +2,7 @@ from app import db
 from app.classes.item import Item_MarketItem
 from app.classes.user import Auth_User
 from datetime import datetime, timedelta
-from app.notification import notification
+from app.common.notification import create_notification
 # run every 12 hours
 def main():
     """
@@ -40,7 +40,7 @@ def main():
             # notify customer
 
         # notify vendor
-        notification(
+        create_notification(
             username=user.user_name,
             user_uuid=user.uuid,
             msg='You have not logged in in 2 days.  All items have been turned off.'

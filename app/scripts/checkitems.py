@@ -1,7 +1,7 @@
 from app import db
 from app.classes.item import Item_MarketItem
 from decimal import Decimal
-from app.notification import notification
+from app.common.notification import create_notification
 
 def turnoffmarketitems():
     change_order = False
@@ -76,7 +76,7 @@ def turnoffmarketitems():
             
 
     if change_order is True:
-        notification(username=specific_item.vendor_name,
+        create_notification(username=specific_item.vendor_name,
                      user_uuid=specific_item.vendor_uuid,
                      msg="Your item has been disabled due to incorrect fields")
         db.session.commit()
