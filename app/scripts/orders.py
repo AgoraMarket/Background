@@ -3,13 +3,8 @@ from datetime import \
     datetime, \
     timedelta
 from sqlalchemy import or_
-
-# Models
 from app.classes.user_orders import User_Orders
-
-# End Models
 from app.common.notification import create_notification
-
 from app.userdata.functions import \
     userdata_add_total_items_bought, \
     userdata_add_total_items_sold, \

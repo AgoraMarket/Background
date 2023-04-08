@@ -1,5 +1,5 @@
 from app import db
-from app.classes.user import User
+from app.classes.user import Auth_User
 from app.classes.profile import  Profile_StatisticsUser
 from app.classes.feedback import Feedback_Feedback
 from decimal import Decimal
@@ -11,7 +11,7 @@ from sqlalchemy import func
 def userrating():
     change_order = False
     user = db.session\
-        .query(User)\
+        .query(Auth_User)\
         .all()
     for f in user:
         # get stats to user

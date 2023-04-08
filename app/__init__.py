@@ -6,7 +6,7 @@ from sqlalchemy.orm import sessionmaker
 from werkzeug.routing import BaseConverter
 import decimal
 from config import load_config
-
+from flask_login import LoginManager
 ApplicationConfig = load_config()
 
 
@@ -38,12 +38,14 @@ app.url_map.converters['regex'] = RegexConverter
 app.json_encoder = DecimalEncoder
 
 
-
-session.configure(bind=ApplicationConfig.SQLALCHEMY_DATABASE_URI_0)
+session.configure(bind=ApplicationConfig.SQLALCHEMY_DATABASE_URI)
 db = SQLAlchemy(app)
 server_session = Session(app)
 ma = Marshmallow(app)
 
+login_manager = LoginManager(app)
+login_manager.session_protection = 'strong'
+login_manager.anonymous_user = "Guest"
 
 
 
